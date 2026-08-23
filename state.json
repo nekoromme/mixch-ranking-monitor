@@ -3,6 +3,13 @@
     "last_heartbeat_at": "2026-08-19T09:13:20Z"
   },
   "night_candidates": {
+    "16997898": {
+      "broadcaster_name": "maho日",
+      "first_seen_at": "2026-08-23T14:35:30Z",
+      "last_seen_at": "2026-08-23T14:35:30Z",
+      "max_momentum": 153,
+      "url": "https://mixch.tv/u/16997898/live"
+    },
     "17297029": {
       "broadcaster_name": "ゆめ☕ルアワ",
       "first_seen_at": "2026-08-23T14:04:18Z",
