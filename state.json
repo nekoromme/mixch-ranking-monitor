@@ -1,0 +1,569 @@
+{
+  "metadata": {
+    "last_heartbeat_at": "2026-08-19T09:13:20Z"
+  },
+  "night_candidates": {},
+  "notifications": {
+    "11185663": {
+      "broadcaster_name": "べいべーあゆ【IRUYA",
+      "last_notified_at": "2026-08-19T22:00:12Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/11185663/live"
+    },
+    "15399572": {
+      "broadcaster_name": "ももにゃんJKミスコン準グランプリ",
+      "last_notified_at": "2026-08-22T22:02:32Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/15399572/live"
+    },
+    "15477822": {
+      "broadcaster_name": "ゆゆ#",
+      "last_notified_at": "2026-08-19T22:00:12Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/15477822/live"
+    },
+    "15492927": {
+      "broadcaster_name": "さあ6周年記念",
+      "last_notified_at": "2026-08-21T22:03:42Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/15492927/live"
+    },
+    "16810478": {
+      "broadcaster_name": "のなびﾁｬﾏミクパから帰宅中",
+      "last_notified_at": "2026-08-22T22:02:32Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/16810478/live"
+    },
+    "16903258": {
+      "broadcaster_name": "サクラバシ919 公式",
+      "last_notified_at": "2026-08-21T22:03:42Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/16903258/live"
+    },
+    "17114808": {
+      "broadcaster_name": "スカイピョン()札コレ",
+      "last_notified_at": "2026-08-20T22:04:45Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/17114808/live"
+    },
+    "17186919": {
+      "broadcaster_name": "のん❤️",
+      "last_notified_at": "2026-08-18T22:02:55Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/17186919/live"
+    },
+    "17352934": {
+      "broadcaster_name": "方城りあ️️⚽本木アンバサ",
+      "last_notified_at": "2026-08-18T12:12:21Z",
+      "url": "https://mixch.tv/u/17352934/live"
+    },
+    "17373942": {
+      "broadcaster_name": "うえきあやか",
+      "last_notified_at": "2026-08-18T10:02:36Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/17373942/live"
+    },
+    "17837380": {
+      "broadcaster_name": "日20時 まー #サツコレ",
+      "last_notified_at": "2026-08-16T04:42:21Z",
+      "url": "https://mixch.tv/u/17837380/live"
+    },
+    "17849248": {
+      "broadcaster_name": "かほ‪#",
+      "last_notified_at": "2026-08-20T22:04:45Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/17849248/live"
+    },
+    "17866373": {
+      "broadcaster_name": "白石あお本日1.5倍最終日ｺﾞｼﾞｬﾎ",
+      "last_notified_at": "2026-08-16T09:31:07Z",
+      "url": "https://mixch.tv/u/17866373/live"
+    },
+    "17913238": {
+      "broadcaster_name": "初日しおぴぇﾏﾄﾞﾘｰ",
+      "last_notified_at": "2026-08-15T22:00:07Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/17913238/live"
+    },
+    "17950307": {
+      "broadcaster_name": "春夏冬きゃろﾐｸﾁｬﾓﾃﾞﾙAD",
+      "last_notified_at": "2026-08-19T22:00:12Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/17950307/live"
+    },
+    "17959898": {
+      "broadcaster_name": "あいり❤️K-1のみ確定❤️",
+      "last_notified_at": "2026-08-14T12:17:56Z",
+      "url": "https://mixch.tv/u/17959898/live"
+    },
+    "18014848": {
+      "broadcaster_name": "日DXコーラ",
+      "last_notified_at": "2026-08-18T10:02:36Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18014848/live"
+    },
+    "18025022": {
+      "broadcaster_name": "﻿ぽっ#!/",
+      "last_notified_at": "2026-08-18T22:02:55Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18025022/live"
+    },
+    "18108780": {
+      "broadcaster_name": "がいい立花もえ‍♀️六本木AD",
+      "last_notified_at": "2026-08-21T22:03:42Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18108780/live"
+    },
+    "18296626": {
+      "broadcaster_name": "女王まりあ",
+      "last_notified_at": "2026-08-20T22:04:45Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18296626/live"
+    },
+    "18319157": {
+      "broadcaster_name": "mio#",
+      "last_notified_at": "2026-08-19T22:00:12Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18319157/live"
+    },
+    "18361692": {
+      "broadcaster_name": "わたちゃ“裏MG",
+      "last_notified_at": "2026-08-14T08:19:47Z",
+      "url": "https://mixch.tv/u/18361692/live"
+    },
+    "18372154": {
+      "broadcaster_name": "初日のゆん#Reabbity",
+      "last_notified_at": "2026-08-14T12:02:29Z",
+      "url": "https://mixch.tv/u/18372154/live"
+    },
+    "18379900": {
+      "broadcaster_name": "おでこのねね#JCﾌｧｲﾅﾘｽ",
+      "last_notified_at": "2026-08-17T10:42:04Z",
+      "url": "https://mixch.tv/u/18379900/live"
+    },
+    "18467780": {
+      "broadcaster_name": "あいみ#サツコレ",
+      "last_notified_at": "2026-08-13T00:13:43Z",
+      "url": "https://mixch.tv/u/18467780/live"
+    },
+    "18497675": {
+      "broadcaster_name": "あんな",
+      "last_notified_at": "2026-08-16T06:09:54Z",
+      "url": "https://mixch.tv/u/18497675/live"
+    },
+    "18504420": {
+      "broadcaster_name": "のうみくん#ﾚｷﾞｭﾗｰﾓﾃﾞ",
+      "last_notified_at": "2026-08-18T12:27:52Z",
+      "url": "https://mixch.tv/u/18504420/live"
+    },
+    "18533166": {
+      "broadcaster_name": "きょうか#JCミスコン2026",
+      "last_notified_at": "2026-08-19T11:07:19Z",
+      "url": "https://mixch.tv/u/18533166/live"
+    },
+    "18580144": {
+      "broadcaster_name": "登坂美羽",
+      "last_notified_at": "2026-08-13T07:11:58Z",
+      "url": "https://mixch.tv/u/18580144/live"
+    },
+    "18587277": {
+      "broadcaster_name": "みったん",
+      "last_notified_at": "2026-08-15T12:12:23Z",
+      "url": "https://mixch.tv/u/18587277/live"
+    },
+    "18642018": {
+      "broadcaster_name": "あおごん",
+      "last_notified_at": "2026-08-13T07:43:13Z",
+      "url": "https://mixch.tv/u/18642018/live"
+    },
+    "18652855": {
+      "broadcaster_name": "ゆら#Natuul専属モデルAD",
+      "last_notified_at": "2026-08-16T07:06:36Z",
+      "url": "https://mixch.tv/u/18652855/live"
+    },
+    "18673781": {
+      "broadcaster_name": "あいね #マリ",
+      "last_notified_at": "2026-08-14T22:01:33Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18673781/live"
+    },
+    "18674264": {
+      "broadcaster_name": "こうぐちまﾙ",
+      "last_notified_at": "2026-08-18T12:38:15Z",
+      "url": "https://mixch.tv/u/18674264/live"
+    },
+    "18724672": {
+      "broadcaster_name": "真愛#ｼﾙﾊﾞﾆｱ",
+      "last_notified_at": "2026-08-14T22:01:33Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18724672/live"
+    },
+    "18750723": {
+      "broadcaster_name": "くるみ#egg専属モデルAD",
+      "last_notified_at": "2026-08-19T22:00:12Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18750723/live"
+    },
+    "18788697": {
+      "broadcaster_name": "あやなjcミスコン2026",
+      "last_notified_at": "2026-08-21T10:45:27Z",
+      "url": "https://mixch.tv/u/18788697/live"
+    },
+    "18801682": {
+      "broadcaster_name": "りあJKミスコン",
+      "last_notified_at": "2026-08-16T03:35:21Z",
+      "url": "https://mixch.tv/u/18801682/live"
+    },
+    "18834150": {
+      "broadcaster_name": "りりか",
+      "last_notified_at": "2026-08-15T02:24:24Z",
+      "url": "https://mixch.tv/u/18834150/live"
+    },
+    "18834510": {
+      "broadcaster_name": "ゆぴ",
+      "last_notified_at": "2026-08-20T10:09:41Z",
+      "url": "https://mixch.tv/u/18834510/live"
+    },
+    "18838049": {
+      "broadcaster_name": "︎りらJCミスコン",
+      "last_notified_at": "2026-08-12T11:58:47Z",
+      "url": "https://mixch.tv/u/18838049/live"
+    },
+    "18839076": {
+      "broadcaster_name": "日1.5倍❤️川譲動画ﾗｲｸ",
+      "last_notified_at": "2026-08-13T04:31:48Z",
+      "url": "https://mixch.tv/u/18839076/live"
+    },
+    "18858926": {
+      "broadcaster_name": "ゆめ#JCミスコン",
+      "last_notified_at": "2026-08-20T12:03:39Z",
+      "url": "https://mixch.tv/u/18858926/live"
+    },
+    "18882904": {
+      "broadcaster_name": "⚡️初日1.3倍⚡️ゆゆだぼイク女",
+      "last_notified_at": "2026-08-20T22:04:45Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18882904/live"
+    },
+    "18888490": {
+      "broadcaster_name": "心来(みくる)#JCミスコン",
+      "last_notified_at": "2026-08-23T01:34:32Z",
+      "url": "https://mixch.tv/u/18888490/live"
+    },
+    "18898775": {
+      "broadcaster_name": "ひなぴよ✨#Natuul専属AD",
+      "last_notified_at": "2026-08-15T04:12:42Z",
+      "url": "https://mixch.tv/u/18898775/live"
+    },
+    "18902944": {
+      "broadcaster_name": "Yuuna#日1.5",
+      "last_notified_at": "2026-08-13T11:46:36Z",
+      "url": "https://mixch.tv/u/18902944/live"
+    },
+    "18903495": {
+      "broadcaster_name": "さーや！！",
+      "last_notified_at": "2026-08-22T03:35:34Z",
+      "url": "https://mixch.tv/u/18903495/live"
+    },
+    "18903516": {
+      "broadcaster_name": "りり",
+      "last_notified_at": "2026-08-22T06:26:11Z",
+      "url": "https://mixch.tv/u/18903516/live"
+    },
+    "18903569": {
+      "broadcaster_name": "てぃるも⒈5IVI日",
+      "last_notified_at": "2026-08-13T12:53:42Z",
+      "url": "https://mixch.tv/u/18903569/live"
+    },
+    "18905689": {
+      "broadcaster_name": "いくと#DKミスターコン",
+      "last_notified_at": "2026-08-21T12:33:58Z",
+      "url": "https://mixch.tv/u/18905689/live"
+    },
+    "18917136": {
+      "broadcaster_name": "ぜん #DCミスターコン 挑戦中",
+      "last_notified_at": "2026-08-14T11:36:40Z",
+      "url": "https://mixch.tv/u/18917136/live"
+    },
+    "18919392": {
+      "broadcaster_name": "りん♡",
+      "last_notified_at": "2026-08-17T04:25:25Z",
+      "url": "https://mixch.tv/u/18919392/live"
+    },
+    "18920347": {
+      "broadcaster_name": "#JKミスコン",
+      "last_notified_at": "2026-08-21T04:27:43Z",
+      "url": "https://mixch.tv/u/18920347/live"
+    },
+    "18921423": {
+      "broadcaster_name": "水乃Pop Girl",
+      "last_notified_at": "2026-08-18T22:02:55Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18921423/live"
+    },
+    "18923924": {
+      "broadcaster_name": "りんビーlike#IVIAD",
+      "last_notified_at": "2026-08-12T22:20:05Z",
+      "url": "https://mixch.tv/u/18923924/live"
+    },
+    "18924352": {
+      "broadcaster_name": "RUI RUI#DCミスターコン",
+      "last_notified_at": "2026-08-22T11:21:19Z",
+      "url": "https://mixch.tv/u/18924352/live"
+    },
+    "18927394": {
+      "broadcaster_name": "りい#めいどりーみ",
+      "last_notified_at": "2026-08-14T22:01:33Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18927394/live"
+    },
+    "18927766": {
+      "broadcaster_name": "ゆりかよ",
+      "last_notified_at": "2026-08-21T05:34:53Z",
+      "url": "https://mixch.tv/u/18927766/live"
+    },
+    "18927820": {
+      "broadcaster_name": "あおIVIAD",
+      "last_notified_at": "2026-08-13T10:18:52Z",
+      "url": "https://mixch.tv/u/18927820/live"
+    },
+    "18929468": {
+      "broadcaster_name": "ちさきJCミスコン2026",
+      "last_notified_at": "2026-08-17T03:23:37Z",
+      "url": "https://mixch.tv/u/18929468/live"
+    },
+    "18939637": {
+      "broadcaster_name": "寧々羽#JCミスコン",
+      "last_notified_at": "2026-08-20T11:37:37Z",
+      "url": "https://mixch.tv/u/18939637/live"
+    },
+    "18939783": {
+      "broadcaster_name": "りの",
+      "last_notified_at": "2026-08-13T09:52:48Z",
+      "url": "https://mixch.tv/u/18939783/live"
+    },
+    "18941703": {
+      "broadcaster_name": "yui#K-1ラウンドガールAD",
+      "last_notified_at": "2026-08-12T09:33:23Z",
+      "url": "https://mixch.tv/u/18941703/live"
+    },
+    "18942145": {
+      "broadcaster_name": "ひなち#JCコンテス026",
+      "last_notified_at": "2026-08-18T12:01:59Z",
+      "url": "https://mixch.tv/u/18942145/live"
+    },
+    "18942155": {
+      "broadcaster_name": "ゆら#JCミスコン",
+      "last_notified_at": "2026-08-15T09:22:13Z",
+      "url": "https://mixch.tv/u/18942155/live"
+    },
+    "18945851": {
+      "broadcaster_name": "あいみ#Popteen",
+      "last_notified_at": "2026-08-18T12:17:32Z",
+      "url": "https://mixch.tv/u/18945851/live"
+    },
+    "18946500": {
+      "broadcaster_name": "み",
+      "last_notified_at": "2026-08-15T12:43:21Z",
+      "url": "https://mixch.tv/u/18946500/live"
+    },
+    "18946717": {
+      "broadcaster_name": "(すい)ｶﾞRBC",
+      "last_notified_at": "2026-08-17T12:04:37Z",
+      "url": "https://mixch.tv/u/18946717/live"
+    },
+    "18946786": {
+      "broadcaster_name": "ひな",
+      "last_notified_at": "2026-08-13T11:41:27Z",
+      "url": "https://mixch.tv/u/18946786/live"
+    },
+    "18947060": {
+      "broadcaster_name": "ミス立教 No.1 那波あや",
+      "last_notified_at": "2026-08-12T12:14:11Z",
+      "url": "https://mixch.tv/u/18947060/live"
+    },
+    "18947594": {
+      "broadcaster_name": "【龍谷】No7松田鈴",
+      "last_notified_at": "2026-08-15T22:00:07Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18947594/live"
+    },
+    "18947774": {
+      "broadcaster_name": "彩夏",
+      "last_notified_at": "2026-08-20T02:39:37Z",
+      "url": "https://mixch.tv/u/18947774/live"
+    },
+    "18948572": {
+      "broadcaster_name": "めい",
+      "last_notified_at": "2026-08-15T22:00:07Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18948572/live"
+    },
+    "18949345": {
+      "broadcaster_name": "ゆいたん️パトン投票#JKミスコン",
+      "last_notified_at": "2026-08-16T12:47:11Z",
+      "url": "https://mixch.tv/u/18949345/live"
+    },
+    "18949965": {
+      "broadcaster_name": "【ミス同志社】No.3山崎真鈴",
+      "last_notified_at": "2026-08-16T22:03:44Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18949965/live"
+    },
+    "18950177": {
+      "broadcaster_name": "ミス東大2026 今飯田紀香",
+      "last_notified_at": "2026-08-14T22:01:33Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18950177/live"
+    },
+    "18950410": {
+      "broadcaster_name": "【ミス同志社】No.2 小野優華",
+      "last_notified_at": "2026-08-12T11:33:02Z",
+      "url": "https://mixch.tv/u/18950410/live"
+    },
+    "18952318": {
+      "broadcaster_name": "るか",
+      "last_notified_at": "2026-08-13T02:48:39Z",
+      "url": "https://mixch.tv/u/18952318/live"
+    },
+    "18952906": {
+      "broadcaster_name": "ここな#ラビッティ掲載AD",
+      "last_notified_at": "2026-08-19T10:56:58Z",
+      "url": "https://mixch.tv/u/18952906/live"
+    },
+    "18954222": {
+      "broadcaster_name": "れにち",
+      "last_notified_at": "2026-08-21T02:18:16Z",
+      "url": "https://mixch.tv/u/18954222/live"
+    },
+    "18954574": {
+      "broadcaster_name": "Emma Natuul専属AD",
+      "last_notified_at": "2026-08-15T03:57:11Z",
+      "url": "https://mixch.tv/u/18954574/live"
+    },
+    "18954672": {
+      "broadcaster_name": "ユナ",
+      "last_notified_at": "2026-08-14T22:01:33Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18954672/live"
+    },
+    "18958724": {
+      "broadcaster_name": "ひま•᎑•",
+      "last_notified_at": "2026-08-17T05:37:34Z",
+      "url": "https://mixch.tv/u/18958724/live"
+    },
+    "18958790": {
+      "broadcaster_name": "ゆずき",
+      "last_notified_at": "2026-08-12T12:24:32Z",
+      "url": "https://mixch.tv/u/18958790/live"
+    },
+    "18960079": {
+      "broadcaster_name": "こうこ＃JCミスコン",
+      "last_notified_at": "2026-08-13T04:21:31Z",
+      "url": "https://mixch.tv/u/18960079/live"
+    },
+    "18961183": {
+      "broadcaster_name": "まこ",
+      "last_notified_at": "2026-08-16T09:46:30Z",
+      "url": "https://mixch.tv/u/18961183/live"
+    },
+    "18961444": {
+      "broadcaster_name": "りあら",
+      "last_notified_at": "2026-08-13T05:38:55Z",
+      "url": "https://mixch.tv/u/18961444/live"
+    },
+    "18962710": {
+      "broadcaster_name": "なな Reabbity専属AD",
+      "last_notified_at": "2026-08-18T11:04:51Z",
+      "url": "https://mixch.tv/u/18962710/live"
+    },
+    "18963376": {
+      "broadcaster_name": "りあ",
+      "last_notified_at": "2026-08-22T06:05:29Z",
+      "url": "https://mixch.tv/u/18963376/live"
+    },
+    "18964338": {
+      "broadcaster_name": "わたあめ",
+      "last_notified_at": "2026-08-15T02:39:54Z",
+      "url": "https://mixch.tv/u/18964338/live"
+    },
+    "18964518": {
+      "broadcaster_name": "あみみ",
+      "last_notified_at": "2026-08-15T07:02:52Z",
+      "url": "https://mixch.tv/u/18964518/live"
+    },
+    "18964653": {
+      "broadcaster_name": "ゆい",
+      "last_notified_at": "2026-08-15T09:22:13Z",
+      "url": "https://mixch.tv/u/18964653/live"
+    },
+    "18964700": {
+      "broadcaster_name": "赤ちゃん",
+      "last_notified_at": "2026-08-21T09:38:12Z",
+      "url": "https://mixch.tv/u/18964700/live"
+    },
+    "18965126": {
+      "broadcaster_name": "ゆうり",
+      "last_notified_at": "2026-08-16T22:03:44Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18965126/live"
+    },
+    "18965584": {
+      "broadcaster_name": "はなこ",
+      "last_notified_at": "2026-08-18T11:46:31Z",
+      "url": "https://mixch.tv/u/18965584/live"
+    },
+    "18966655": {
+      "broadcaster_name": "どりーむ♪",
+      "last_notified_at": "2026-08-18T10:02:36Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18966655/live"
+    },
+    "18966992": {
+      "broadcaster_name": "かんな",
+      "last_notified_at": "2026-08-22T22:02:32Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18966992/live"
+    },
+    "18967167": {
+      "broadcaster_name": "みゆ",
+      "last_notified_at": "2026-08-18T10:07:47Z",
+      "url": "https://mixch.tv/u/18967167/live"
+    },
+    "18967222": {
+      "broadcaster_name": "ねこくん",
+      "last_notified_at": "2026-08-22T02:12:02Z",
+      "url": "https://mixch.tv/u/18967222/live"
+    },
+    "18968140": {
+      "broadcaster_name": "み",
+      "last_notified_at": "2026-08-19T22:00:12Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18968140/live"
+    },
+    "18968348": {
+      "broadcaster_name": "ここ",
+      "last_notified_at": "2026-08-21T22:03:42Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18968348/live"
+    },
+    "18969242": {
+      "broadcaster_name": "HINA",
+      "last_notified_at": "2026-08-22T22:02:32Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18969242/live"
+    },
+    "18969450": {
+      "broadcaster_name": "ミリー",
+      "last_notified_at": "2026-08-21T11:21:30Z",
+      "url": "https://mixch.tv/u/18969450/live"
+    },
+    "18969502": {
+      "broadcaster_name": "ここみ",
+      "last_notified_at": "2026-08-21T22:03:42Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18969502/live"
+    }
+  },
+  "version": 1
+}
