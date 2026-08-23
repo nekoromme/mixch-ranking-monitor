@@ -1,0 +1,95 @@
+name: MixChannel勢い監視
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "通知せず、該当配信とログだけ確認する"
+        required: true
+        type: boolean
+        default: true
+      test_webhook:
+        description: "Discordへテスト通知を1件送る"
+        required: true
+        type: boolean
+        default: false
+      threshold_override:
+        description: "この手動実行だけ使う勢い度（空欄なら通常設定）"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mixch-ranking-monitor-state-current
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      MOMENTUM_THRESHOLD: ${{ inputs.threshold_override || vars.MOMENTUM_THRESHOLD || '150' }}
+      COOLDOWN_HOURS: ${{ vars.COOLDOWN_HOURS || '12' }}
+      ERROR_NOTIFY_COOLDOWN_HOURS: ${{ vars.ERROR_NOTIFY_COOLDOWN_HOURS || '6' }}
+      HEARTBEAT_DAYS: ${{ vars.HEARTBEAT_DAYS || '7' }}
+      BLOCKED_USER_IDS: ${{ vars.BLOCKED_USER_IDS || '' }}
+      FALLBACK_MONITOR_URL: ${{ vars.FALLBACK_MONITOR_URL || 'https://ikioi-ranking.com/v/mixch' }}
+      DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || 'false' }}
+      TEST_WEBHOOK: ${{ github.event_name == 'workflow_dispatch' && inputs.test_webhook || 'false' }}
+      PYTHONUNBUFFERED: "1"
+
+    steps:
+      - name: ソースを取得
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 状態ファイルの場所を設定
+        shell: bash
+        run: echo "STATE_FILE=$RUNNER_TEMP/mixch-ranking-state.json" >> "$GITHUB_ENV"
+
+      - name: 前回の通知状態を読む
+        shell: bash
+        run: |
+          if git fetch origin monitor-state --depth=1 >/dev/null 2>&1 \
+            && git show origin/monitor-state:state.json > "$STATE_FILE" 2>/dev/null; then
+            echo "前回の通知状態を読み込みました。"
+          else
+            printf '{"version":1,"notifications":{},"night_candidates":{},"metadata":{}}\n' > "$STATE_FILE"
+            echo "初回実行のため、空の通知状態から始めます。"
+          fi
+
+      - name: ランキングを確認
+        run: python3 -m src.mixch_monitor
+
+      - name: 通知状態を保存
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          if [ ! -f "$STATE_FILE" ]; then
+            echo "保存する状態ファイルがないため終了します。"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if git show-ref --verify --quiet refs/remotes/origin/monitor-state; then
+            git switch --force-create monitor-state origin/monitor-state
+          else
+            git switch --orphan monitor-state
+          fi
+
+          cp "$STATE_FILE" state.json
+          git add state.json
+
+          if git diff --cached --quiet; then
+            echo "通知状態に変更はありません。"
+            exit 0
+          fi
+
+          git commit -m "chore: update monitor state [skip ci]"
+          git push origin HEAD:monitor-state

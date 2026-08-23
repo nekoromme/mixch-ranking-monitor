@@ -1,0 +1,88 @@
+name: MixChannel 停止監視・自動復旧
+
+on:
+  # 5分リレーとは独立したGitHub標準の定期実行。
+  # 毎時0分を避け、リレーが切れても次の定期実行が単独で起動できるようにする。
+  schedule:
+    - cron: "2,7,12,17,22,27,32,37,42,47,52,57 * * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "通知・再起動・状態更新をせず、判定ログだけ確認する"
+        required: true
+        type: boolean
+        default: true
+
+permissions:
+  actions: write
+  contents: write
+
+concurrency:
+  group: mixch-ranking-monitor-watchdog
+  cancel-in-progress: false
+
+jobs:
+  check-and-recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      GH_TOKEN: ${{ github.token }}
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      WATCHDOG_STALE_MINUTES: ${{ vars.WATCHDOG_STALE_MINUTES || '12' }}
+      WATCHDOG_REMINDER_MINUTES: ${{ vars.WATCHDOG_REMINDER_MINUTES || '60' }}
+      WATCHDOG_RELAY_ACTIVE_MAX_MINUTES: ${{ vars.WATCHDOG_RELAY_ACTIVE_MAX_MINUTES || '20' }}
+      GITHUB_API_TIMEOUT_SECONDS: "10"
+      WATCHDOG_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || 'false' }}
+      PYTHONUNBUFFERED: "1"
+
+    steps:
+      - name: ソースを取得
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 監視番の状態ファイルを準備
+        shell: bash
+        run: |
+          echo "WATCHDOG_STATE_FILE=$RUNNER_TEMP/mixch-watchdog-state.json" >> "$GITHUB_ENV"
+
+          if git fetch origin watchdog-state --depth=1 >/dev/null 2>&1 \
+            && git show origin/watchdog-state:state.json > "$RUNNER_TEMP/mixch-watchdog-state.json" 2>/dev/null; then
+            echo "前回の停止通知状態を読み込みました。"
+          else
+            printf '{"version":1,"incident_open":false,"incident_started_at":null,"incident_kind":null,"last_alerted_at":null,"last_restart_attempt_at":null,"last_recovered_at":null}\n' \
+              > "$RUNNER_TEMP/mixch-watchdog-state.json"
+            echo "初回実行のため、空の停止通知状態から始めます。"
+          fi
+
+      - name: 停止判定と自動復旧
+        run: python3 -m src.github_actions_recovery watchdog
+
+      - name: 停止通知状態を保存
+        if: ${{ always() && env.WATCHDOG_DRY_RUN != 'true' }}
+        shell: bash
+        run: |
+          if [ ! -f "$WATCHDOG_STATE_FILE" ]; then
+            echo "保存する停止通知状態がないため終了します。"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if git show-ref --verify --quiet refs/remotes/origin/watchdog-state; then
+            git switch --force-create watchdog-state origin/watchdog-state
+          else
+            git switch --orphan watchdog-state
+          fi
+
+          cp "$WATCHDOG_STATE_FILE" state.json
+          git add state.json
+
+          if git diff --cached --quiet; then
+            echo "停止通知状態に変更はありません。"
+            exit 0
+          fi
+
+          git commit -m "chore: update watchdog state [skip ci]"
+          git push origin HEAD:watchdog-state

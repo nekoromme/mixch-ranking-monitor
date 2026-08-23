@@ -1,0 +1,44 @@
+name: MixChannel 5分リレー
+
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: mixch-ranking-monitor-relay
+  cancel-in-progress: false
+
+jobs:
+  wait-and-dispatch:
+    if: ${{ vars.RELAY_ENABLED != 'false' }}
+    environment: five-minute-delay
+    runs-on: ubuntu-latest
+    # 本体と次回リレーの両方が一時的な503を受けても、段階的再試行を
+    # 最後まで実行できる時間を確保する。
+    timeout-minutes: 6
+
+    steps:
+      - name: 再試行プログラムを取得
+        uses: actions/checkout@v4
+
+      - name: 本番監視を起動
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_API_TIMEOUT_SECONDS: "10"
+        shell: bash
+        run: |
+          python3 -m src.github_actions_recovery dispatch ranking-monitor.yml \
+            --input dry_run=false \
+            --input test_webhook=false
+
+      - name: 次回リレーを予約
+        if: ${{ always() && vars.RELAY_ENABLED != 'false' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_API_TIMEOUT_SECONDS: "10"
+        shell: bash
+        run: |
+          python3 -m src.github_actions_recovery dispatch relay.yml

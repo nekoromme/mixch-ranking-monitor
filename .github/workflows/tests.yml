@@ -1,0 +1,24 @@
+name: テスト
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: ソースを取得
+        uses: actions/checkout@v4
+      - name: 単体テスト
+        run: python3 -m unittest discover -s tests -v
+      - name: 構文確認
+        run: python3 -m compileall -q src tests
+
