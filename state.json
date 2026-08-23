@@ -2,7 +2,15 @@
   "metadata": {
     "last_heartbeat_at": "2026-08-19T09:13:20Z"
   },
-  "night_candidates": {},
+  "night_candidates": {
+    "17297029": {
+      "broadcaster_name": "ゆめ☕ルアワ",
+      "first_seen_at": "2026-08-23T14:04:18Z",
+      "last_seen_at": "2026-08-23T14:04:18Z",
+      "max_momentum": 230,
+      "url": "https://mixch.tv/u/17297029/live"
+    }
+  },
   "notifications": {
     "11185663": {
       "broadcaster_name": "べいべーあゆ【IRUYA",
