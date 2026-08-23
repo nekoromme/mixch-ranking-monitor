@@ -1,9 +1,9 @@
 {
-  "incident_kind": null,
-  "incident_open": false,
-  "incident_started_at": null,
-  "last_alerted_at": null,
+  "incident_kind": "monitor_stale",
+  "incident_open": true,
+  "incident_started_at": "2026-08-23T02:10:52Z",
+  "last_alerted_at": "2026-08-23T02:10:52Z",
   "last_recovered_at": "2026-08-18T10:42:12Z",
-  "last_restart_attempt_at": null,
+  "last_restart_attempt_at": "2026-08-23T02:10:52Z",
   "version": 1
 }
