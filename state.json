@@ -2,64 +2,7 @@
   "metadata": {
     "last_heartbeat_at": "2026-08-19T09:13:20Z"
   },
-  "night_candidates": {
-    "16534914": {
-      "broadcaster_name": "Reina‍♀️塩スイー",
-      "first_seen_at": "2026-08-24T14:11:58Z",
-      "last_seen_at": "2026-08-24T14:11:58Z",
-      "max_momentum": 217,
-      "url": "https://mixch.tv/u/16534914/live"
-    },
-    "18764417": {
-      "broadcaster_name": "さきつ阪美少女図",
-      "first_seen_at": "2026-08-24T13:30:27Z",
-      "last_seen_at": "2026-08-24T13:30:27Z",
-      "max_momentum": 226,
-      "url": "https://mixch.tv/u/18764417/live"
-    },
-    "18921423": {
-      "broadcaster_name": "水乃MissPopGirl",
-      "first_seen_at": "2026-08-24T15:40:24Z",
-      "last_seen_at": "2026-08-24T15:40:24Z",
-      "max_momentum": 186,
-      "url": "https://mixch.tv/u/18921423/live"
-    },
-    "18936473": {
-      "broadcaster_name": "初日しょうこLARMEテミス",
-      "first_seen_at": "2026-08-24T14:27:33Z",
-      "last_seen_at": "2026-08-24T14:27:33Z",
-      "max_momentum": 181,
-      "url": "https://mixch.tv/u/18936473/live"
-    },
-    "18948508": {
-      "broadcaster_name": "⭐️せーな⭐️#egg専属AD",
-      "first_seen_at": "2026-08-24T13:20:06Z",
-      "last_seen_at": "2026-08-24T13:20:06Z",
-      "max_momentum": 150,
-      "url": "https://mixch.tv/u/18948508/live"
-    },
-    "18954638": {
-      "broadcaster_name": "MOKA #プラチナAD",
-      "first_seen_at": "2026-08-24T13:25:17Z",
-      "last_seen_at": "2026-08-24T13:25:17Z",
-      "max_momentum": 154,
-      "url": "https://mixch.tv/u/18954638/live"
-    },
-    "18964700": {
-      "broadcaster_name": "赤ちゃん",
-      "first_seen_at": "2026-08-24T14:01:35Z",
-      "last_seen_at": "2026-08-24T14:01:35Z",
-      "max_momentum": 176,
-      "url": "https://mixch.tv/u/18964700/live"
-    },
-    "18965126": {
-      "broadcaster_name": "ゆうり",
-      "first_seen_at": "2026-08-24T16:06:17Z",
-      "last_seen_at": "2026-08-24T16:16:44Z",
-      "max_momentum": 220,
-      "url": "https://mixch.tv/u/18965126/live"
-    }
-  },
+  "night_candidates": {},
   "notifications": {
     "11185663": {
       "broadcaster_name": "べいべーあゆ【IRUYA",
@@ -89,6 +32,12 @@
       "broadcaster_name": "ゆのﾞﾙｱﾜ最終日❤️",
       "last_notified_at": "2026-08-23T12:46:48Z",
       "url": "https://mixch.tv/u/16000840/live"
+    },
+    "16534914": {
+      "broadcaster_name": "Reina‍♀️塩スイー",
+      "last_notified_at": "2026-08-24T22:03:30Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/16534914/live"
     },
     "16810478": {
       "broadcaster_name": "のなびﾁｬﾏミクパから帰宅中",
@@ -293,6 +242,12 @@
       "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/18750723/live"
     },
+    "18764417": {
+      "broadcaster_name": "さきつ阪美少女図",
+      "last_notified_at": "2026-08-24T22:03:30Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18764417/live"
+    },
     "18775209": {
       "broadcaster_name": "美少女Bgirl✨みちか#JCミスコン",
       "last_notified_at": "2026-08-23T11:18:52Z",
@@ -396,8 +351,8 @@
       "url": "https://mixch.tv/u/18920347/live"
     },
     "18921423": {
-      "broadcaster_name": "水乃Pop Girl",
-      "last_notified_at": "2026-08-18T22:02:55Z",
+      "broadcaster_name": "水乃MissPopGirl",
+      "last_notified_at": "2026-08-24T22:03:30Z",
       "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/18921423/live"
     },
@@ -441,6 +396,12 @@
       "broadcaster_name": "ちさきJCミスコン2026",
       "last_notified_at": "2026-08-17T03:23:37Z",
       "url": "https://mixch.tv/u/18929468/live"
+    },
+    "18936473": {
+      "broadcaster_name": "初日しょうこLARMEテミス",
+      "last_notified_at": "2026-08-24T22:03:30Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18936473/live"
     },
     "18939637": {
       "broadcaster_name": "寧々羽#JCミスコン",
@@ -503,6 +464,12 @@
       "last_notified_at": "2026-08-20T02:39:37Z",
       "url": "https://mixch.tv/u/18947774/live"
     },
+    "18948508": {
+      "broadcaster_name": "⭐️せーな⭐️#egg専属AD",
+      "last_notified_at": "2026-08-24T22:03:30Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18948508/live"
+    },
     "18948572": {
       "broadcaster_name": "めい",
       "last_notified_at": "2026-08-15T22:00:07Z",
@@ -560,6 +527,12 @@
       "broadcaster_name": "Emma Natuul専属AD",
       "last_notified_at": "2026-08-15T03:57:11Z",
       "url": "https://mixch.tv/u/18954574/live"
+    },
+    "18954638": {
+      "broadcaster_name": "MOKA #プラチナAD",
+      "last_notified_at": "2026-08-24T22:03:30Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18954638/live"
     },
     "18954672": {
       "broadcaster_name": "ユナ",
@@ -629,12 +602,13 @@
     },
     "18964700": {
       "broadcaster_name": "赤ちゃん",
-      "last_notified_at": "2026-08-21T09:38:12Z",
+      "last_notified_at": "2026-08-24T22:03:30Z",
+      "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/18964700/live"
     },
     "18965126": {
       "broadcaster_name": "ゆうり",
-      "last_notified_at": "2026-08-16T22:03:44Z",
+      "last_notified_at": "2026-08-24T22:03:30Z",
       "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/18965126/live"
     },
