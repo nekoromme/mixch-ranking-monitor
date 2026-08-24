@@ -2,7 +2,15 @@
   "metadata": {
     "last_heartbeat_at": "2026-08-19T09:13:20Z"
   },
-  "night_candidates": {},
+  "night_candidates": {
+    "18948508": {
+      "broadcaster_name": "⭐️せーな⭐️#egg専属AD",
+      "first_seen_at": "2026-08-24T13:20:06Z",
+      "last_seen_at": "2026-08-24T13:20:06Z",
+      "max_momentum": 150,
+      "url": "https://mixch.tv/u/18948508/live"
+    }
+  },
   "notifications": {
     "11185663": {
       "broadcaster_name": "べいべーあゆ【IRUYA",
