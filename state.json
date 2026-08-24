@@ -611,6 +611,11 @@
       "last_notified_at": "2026-08-21T22:03:42Z",
       "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/18969502/live"
+    },
+    "18971554": {
+      "broadcaster_name": "みく",
+      "last_notified_at": "2026-08-24T06:00:31Z",
+      "url": "https://mixch.tv/u/18971554/live"
     }
   },
   "version": 1
