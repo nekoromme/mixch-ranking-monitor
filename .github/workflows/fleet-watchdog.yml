@@ -1,6 +1,12 @@
 name: 全監視ツール停止監視
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "src/fleet_watchdog.py"
+      - "fleet_targets.json"
+      - ".github/workflows/fleet-watchdog.yml"
   schedule:
     # 毎時の混雑しやすい0分を避け、日本時間でも15分おきに確認する。
     - cron: "9,24,39,54 * * * *"
