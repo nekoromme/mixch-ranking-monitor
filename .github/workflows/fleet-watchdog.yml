@@ -34,6 +34,7 @@ concurrency:
 
 jobs:
   check-all-monitors:
+    name: 監視番自体の処理（赤なら修理が必要）
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:

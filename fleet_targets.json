@@ -5,42 +5,60 @@
       "repository": "nekoromme/mixch-ranking-monitor",
       "workflow": "ranking-monitor.yml",
       "max_success_age_minutes": 25,
-      "max_run_minutes": 15
+      "max_run_minutes": 15,
+      "purpose": "MixChannelの勢いランキングを約5分おきに確認する本体",
+      "outage_impact": "勢いが高い配信の発見とDiscord通知が遅れる可能性があります。",
+      "automatic_recovery": "既存の停止監視が本体の再起動を試みます。"
     },
     {
       "name": "MixChannel勢い監視（5分リレー）",
       "repository": "nekoromme/mixch-ranking-monitor",
       "workflow": "relay.yml",
       "max_success_age_minutes": 25,
-      "max_run_minutes": 12
+      "max_run_minutes": 12,
+      "purpose": "勢い監視本体を約5分おきに起動する仕組み",
+      "outage_impact": "勢い監視の間隔が延びる可能性があります。ただし本体が止まったと確定したわけではありません。",
+      "automatic_recovery": "別の停止監視が本体と5分リレーの再起動を試みます。"
     },
     {
-      "name": "MixChannel勢い監視（停止監視）",
+      "name": "MixChannelの自動復旧チェック",
       "repository": "nekoromme/mixch-ranking-monitor",
       "workflow": "watchdog.yml",
-      "max_success_age_minutes": 25,
-      "max_run_minutes": 15
+      "max_success_age_minutes": 45,
+      "max_run_minutes": 15,
+      "purpose": "勢い監視本体や5分リレーが止まっていないか確認し、必要なら再起動する予備の監視",
+      "outage_impact": "勢い監視本体が止まったと確定したわけではありません。ただし本体が止まった時の自動復旧が遅れる可能性があります。",
+      "automatic_recovery": "GitHubの次回定期実行を待ち、この全体監視番が15分おきに復旧を確認します。"
     },
     {
       "name": "トレカ抽選・発売監視",
       "repository": "nekoromme/tcg-box-monitor-public",
       "workflow": "monitor.yml",
       "max_success_age_minutes": 600,
-      "max_run_minutes": 75
+      "max_run_minutes": 75,
+      "purpose": "トレーディングカードの抽選・発売情報を定期確認する監視",
+      "outage_impact": "新しい抽選や発売情報の発見とDiscord通知が遅れる可能性があります。",
+      "automatic_recovery": "次回の定期実行で自動的にもう一度確認します。"
     },
     {
       "name": "MixChannelアーカイブ監視",
       "repository": "nekoromme/mixch-archive-monitor-public",
       "workflow": "schedule.yml",
       "max_success_age_minutes": 780,
-      "max_run_minutes": 45
+      "max_run_minutes": 45,
+      "purpose": "MixChannelの配信アーカイブを定期確認する監視",
+      "outage_impact": "アーカイブの記録とDiscord通知が遅れる可能性があります。",
+      "automatic_recovery": "次回の定期実行で自動的にもう一度確認します。"
     },
     {
       "name": "高額抽選監視（RICOH）",
       "repository": "nekoromme/high-value-lottery-monitor",
       "workflow": "monitor.yml",
       "max_success_age_minutes": 150,
-      "max_run_minutes": 30
+      "max_run_minutes": 30,
+      "purpose": "RICOHなど高額商品の公式抽選ページを定期確認する監視",
+      "outage_impact": "新しい抽選フォームの発見とカレンダー・Discord通知が遅れる可能性があります。",
+      "automatic_recovery": "次回の定期実行で自動的にもう一度確認します。"
     }
   ]
 }

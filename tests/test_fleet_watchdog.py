@@ -8,10 +8,15 @@ from pathlib import Path
 
 from src.fleet_watchdog import (
     Health,
+    IncidentEvent,
     Target,
     WatchdogError,
+    alert_version_marker,
+    build_discord_payload,
     evaluate_target,
+    explain_health,
     index_open_incidents,
+    issue_body,
     issue_marker,
     load_targets,
     plan_incidents,
@@ -49,6 +54,9 @@ TARGET = Target(
     workflow="monitor.yml",
     max_success_age_minutes=30,
     max_run_minutes=10,
+    purpose="テスト用の定期監視",
+    outage_impact="テスト通知が遅れる可能性があります。",
+    automatic_recovery="次回実行で再確認します。",
 )
 
 
@@ -130,9 +138,17 @@ class IncidentPlanningTests(unittest.TestCase):
         self.assertEqual([event.kind for event in events], ["opened"])
 
     def test_continuing_failure_does_not_repeat(self) -> None:
-        open_incidents = {TARGET.key: {"number": 12}}
+        open_incidents = {
+            TARGET.key: {"number": 12, "body": alert_version_marker()}
+        }
         events = plan_incidents([self.health(False)], open_incidents)
         self.assertEqual(events, [])
+
+    def test_old_alert_format_is_updated_once(self) -> None:
+        open_incidents = {TARGET.key: {"number": 12, "body": "古い通知"}}
+        events = plan_incidents([self.health(False)], open_incidents)
+        self.assertEqual(events[0].kind, "updated")
+        self.assertEqual(events[0].issue_number, 12)
 
     def test_recovery_closes_existing_issue(self) -> None:
         open_incidents = {TARGET.key: {"number": 12}}
@@ -144,6 +160,52 @@ class IncidentPlanningTests(unittest.TestCase):
         issues = [{"number": 7, "body": f"text\n{issue_marker(TARGET)}\nmore"}]
         indexed = index_open_incidents(issues, [TARGET])
         self.assertEqual(indexed[TARGET.key]["number"], 7)
+
+
+class AlertMessageTests(unittest.TestCase):
+    def stale_health(self, age: int = 31) -> Health:
+        return Health(
+            target=TARGET,
+            healthy=False,
+            code="success_stale",
+            detail="最後の成功が古い",
+            checked_at=NOW.isoformat(),
+            latest_run_url="https://github.com/example/monitor/actions/runs/1",
+            last_success_at=stamp(age),
+            last_success_age_minutes=age,
+        )
+
+    def test_stale_once_is_warning_and_requires_no_immediate_action(self) -> None:
+        explanation = explain_health(self.stale_health())
+        self.assertEqual(explanation.severity, "warning")
+        self.assertIn("何もしなくてOK", explanation.user_action)
+        self.assertIn("2026/08/24", explanation.what_happened)
+
+    def test_repeated_failure_is_critical(self) -> None:
+        health = Health(
+            target=TARGET,
+            healthy=False,
+            code="latest_run_failed",
+            detail="連続失敗",
+            checked_at=NOW.isoformat(),
+            latest_run_conclusion="failure",
+            consecutive_failures=2,
+        )
+        explanation = explain_health(health)
+        self.assertEqual(explanation.severity, "critical")
+        self.assertIn("GitHubを操作する必要はありません", explanation.user_action)
+
+    def test_discord_alert_has_four_plain_language_sections(self) -> None:
+        event = IncidentEvent("opened", self.stale_health())
+        payload = build_discord_payload([event])
+        description = payload["embeds"][0]["description"]
+        for heading in ("何が起きた？", "影響", "自動でやること", "おまえがやること"):
+            self.assertIn(heading, description)
+
+    def test_issue_uses_current_format_marker(self) -> None:
+        body = issue_body(self.stale_health())
+        self.assertIn(alert_version_marker(), body)
+        self.assertIn("### おまえがやること", body)
 
 
 class ConfigTests(unittest.TestCase):

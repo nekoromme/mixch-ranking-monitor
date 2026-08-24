@@ -7,7 +7,8 @@ GitHub上で動く既存の監視ツールを15分おきに横断確認する「
 
 | 監視ツール | 確認するワークフロー | 停止とみなす目安 |
 |---|---|---:|
-| MixChannel勢い監視 | 本体・5分リレー・既存の停止監視 | 最後の成功から25分 |
+| MixChannel勢い監視 | 本体・5分リレー | 最後の成功から25分 |
+| MixChannel自動復旧チェック | 既存の停止監視 | 最後の成功から45分 |
 | トレカ抽選・発売監視 | `tcg-box-monitor-public/monitor.yml` | 最後の成功から10時間 |
 | MixChannelアーカイブ監視 | `mixch-archive-monitor-public/schedule.yml` | 最後の成功から13時間 |
 | 高額抽選監視（RICOH） | `high-value-lottery-monitor/monitor.yml` | 最後の成功から2時間30分 |
@@ -30,7 +31,11 @@ GitHub上で動く既存の監視ツールを15分おきに横断確認する「
 1. 既存の `DISCORD_WEBHOOK_URL` を使ったDiscord通知
 2. このリポジトリの `[監視ツール異常]` Issue
 
+通知は必ず「何が起きた？」「影響」「自動でやること」「おまえがやること」の順で表示します。1回の遅延や取得失敗はオレンジの「様子見」、連続失敗・大幅な遅延・無効化は赤の「対応が必要」、復旧は緑で区別します。
+
 同じ異常が続いても15分おきに連投しません。復旧を確認するとDiscordへ復旧通知を送り、対応するIssueを自動で閉じます。Issueが重複防止状態を兼ねるため、別ブランチへのJSON保存やActionsキャッシュには依存しません。
+
+監視対象の異常を見つけても、この監視番のGitHub Actionsジョブ自体は成功扱いにします。対象の異常はDiscordとIssueですでに説明するためです。ジョブが赤くなるのは、監視番自身が例外で診断を完了できなかった時だけです。
 
 ## 手動テスト
 
@@ -43,13 +48,16 @@ Discord経路も確認する場合は `test_notification` をオンにします�
 
 ## 対象を増やす時
 
-`fleet_targets.json` の `targets` に次の5項目を追加します。
+`fleet_targets.json` の `targets` に次の8項目を追加します。
 
 - `name`: 通知に表示する名前
 - `repository`: `所有者/リポジトリ名`
 - `workflow`: `.github/workflows/` 内のファイル名
 - `max_success_age_minutes`: 最後の成功が古いと判断する分数
 - `max_run_minutes`: 実行が固まったと判断する分数
+- `purpose`: その監視が何をしているかの平易な説明
+- `outage_impact`: 止まった時に利用者へ起きる影響
+- `automatic_recovery`: 自動で試す復旧または次の再確認
 
 公開リポジトリなら追加のアクセストークンは不要です。非公開リポジトリを対象にする場合は、標準の `GITHUB_TOKEN` では別リポジトリを読めないため、読み取り専用のGitHub Appなどを別途用意する必要があります。
 

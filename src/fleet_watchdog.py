@@ -17,15 +17,17 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
 
 UTC = timezone.utc
+JST = timezone(timedelta(hours=9))
 API_VERSION = "2022-11-28"
 USER_AGENT = "nekoromme-fleet-watchdog/1.0"
 ISSUE_PREFIX = "[監視ツール異常]"
+ALERT_FORMAT_VERSION = "2"
 
 
 class WatchdogError(RuntimeError):
@@ -41,6 +43,9 @@ class Target:
     workflow: str
     max_success_age_minutes: int
     max_run_minutes: int
+    purpose: str = "監視対象の定期処理"
+    outage_impact: str = "この監視対象の通知や更新が遅れる可能性があります。"
+    automatic_recovery: str = "次回の定期実行で自動的に再確認します。"
 
     @property
     def key(self) -> str:
@@ -80,9 +85,24 @@ class Health:
 class IncidentEvent:
     """Issue と Discord に反映すべき、新規異常または復旧。"""
 
-    kind: str  # "opened" または "recovered"
+    kind: str  # "opened"、"updated" または "recovered"
     health: Health
     issue_number: int | None = None
+
+
+@dataclass(frozen=True)
+class AlertExplanation:
+    """通知を読んだ人が、状況と次の行動を迷わないための説明。"""
+
+    severity: str
+    icon: str
+    label: str
+    headline: str
+    what_happened: str
+    impact: str
+    automatic_action: str
+    user_action: str
+    color: int
 
 
 def parse_github_time(value: str | None) -> datetime | None:
@@ -102,6 +122,15 @@ def age_minutes(now: datetime, value: str | None) -> int | None:
         return None
     # API 側と runner 側の時計が数秒ずれて未来になる場合は、0分として扱う。
     return max(0, int((now - parsed).total_seconds() // 60))
+
+
+def format_jst(value: str | None) -> str:
+    """機械向けUTCではなく、ユーザーがそのまま読める日本時間へ変換する。"""
+
+    parsed = parse_github_time(value)
+    if parsed is None:
+        return "不明"
+    return parsed.astimezone(JST).strftime("%Y/%m/%d %H:%M")
 
 
 class GitHubClient:
@@ -182,6 +211,13 @@ class GitHubClient:
             "POST", f"/repos/{repository}/issues", {"title": title, "body": body}
         )
 
+    def update_issue(self, repository: str, number: int, title: str, body: str) -> None:
+        self.request(
+            "PATCH",
+            f"/repos/{repository}/issues/{number}",
+            {"title": title, "body": body},
+        )
+
     def comment_issue(self, repository: str, number: int, body: str) -> None:
         self.request("POST", f"/repos/{repository}/issues/{number}/comments", {"body": body})
 
@@ -207,11 +243,27 @@ def load_targets(path: Path) -> list[Target]:
                 workflow=str(item["workflow"]).strip(),
                 max_success_age_minutes=int(item["max_success_age_minutes"]),
                 max_run_minutes=int(item["max_run_minutes"]),
+                purpose=str(item.get("purpose") or "監視対象の定期処理").strip(),
+                outage_impact=str(
+                    item.get("outage_impact")
+                    or "この監視対象の通知や更新が遅れる可能性があります。"
+                ).strip(),
+                automatic_recovery=str(
+                    item.get("automatic_recovery")
+                    or "次回の定期実行で自動的に再確認します。"
+                ).strip(),
             )
         except (KeyError, TypeError, ValueError) as exc:
             raise WatchdogError(f"targets の {index} 件目が不正です: {exc}") from exc
 
-        if not target.name or "/" not in target.repository or not target.workflow:
+        if (
+            not target.name
+            or "/" not in target.repository
+            or not target.workflow
+            or not target.purpose
+            or not target.outage_impact
+            or not target.automatic_recovery
+        ):
             raise WatchdogError(f"targets の {index} 件目に空欄または不正なリポジトリ名があります")
         if target.max_success_age_minutes <= 0 or target.max_run_minutes <= 0:
             raise WatchdogError(f"targets の {index} 件目の時間は1以上にしてください")
@@ -377,6 +429,152 @@ def issue_marker(target: Target) -> str:
     return f"<!-- fleet-watchdog:{digest} -->"
 
 
+def alert_version_marker() -> str:
+    return f"<!-- fleet-watchdog-alert-version:{ALERT_FORMAT_VERSION} -->"
+
+
+def _conclusion_ja(value: str | None) -> str:
+    return {
+        "failure": "失敗",
+        "cancelled": "キャンセル",
+        "timed_out": "時間切れ",
+        "action_required": "追加操作待ち",
+        "startup_failure": "開始失敗",
+        "stale": "停止扱い",
+        "skipped": "スキップ",
+        "neutral": "判定なし",
+    }.get(str(value), str(value or "不明"))
+
+
+def explain_health(result: Health) -> AlertExplanation:
+    """機械的な判定コードを、判断と行動が分かる日本語へ変換する。"""
+
+    name = result.target.name
+    if result.healthy:
+        success = (
+            f"最後の正常終了は {format_jst(result.last_success_at)} です。"
+            if result.last_success_at
+            else result.detail
+        )
+        return AlertExplanation(
+            severity="recovery",
+            icon="🟢",
+            label="復旧",
+            headline=f"{name}は復旧しました",
+            what_happened=f"正常に動いていることを確認しました。{success}",
+            impact="現在は正常です。通知や更新が遅れる可能性は解消しました。",
+            automatic_action="このまま通常どおり監視を続けます。",
+            user_action="何もしなくてOKです。",
+            color=0x2ECC71,
+        )
+
+    common_wait = (
+        "今は何もしなくてOKです。1時間たっても復旧通知が来なければ、"
+        "この通知をそのままわたしに送ってください。"
+    )
+    common_manual = (
+        "この通知をそのままわたしに送ってください。"
+        "おまえがGitHubを操作する必要はありません。"
+    )
+
+    severity = "warning"
+    label = "様子見"
+    icon = "⚠️"
+    color = 0xF39C12
+    impact = result.target.outage_impact
+    automatic = (
+        f"{result.target.automatic_recovery} "
+        "全体監視番も15分おきに復旧を確認します。"
+    )
+    action = common_wait
+
+    if result.code == "api_error":
+        headline = f"{name}の状態確認に失敗しました"
+        what = (
+            "GitHubから実行状況を取得できませんでした。"
+            "監視対象そのものが止まったとはまだ判断していません。"
+        )
+        impact = "現時点では実害不明です。次の確認結果を待ちます。"
+        automatic = "全体監視番が15分後にもう一度確認します。"
+    elif result.code == "success_stale":
+        age = result.last_success_age_minutes
+        headline = f"{name}が予定どおり動いていません"
+        what = (
+            f"最後の正常終了は {format_jst(result.last_success_at)}。"
+            f"そこから {age if age is not None else '不明'} 分経過し、"
+            f"通常の待ち時間 {result.target.max_success_age_minutes} 分を超えました。"
+        )
+        if age is not None and age > result.target.max_success_age_minutes * 2:
+            severity, label, icon, color, action = (
+                "critical",
+                "対応が必要",
+                "🔴",
+                0xE74C3C,
+                common_manual,
+            )
+    elif result.code == "latest_run_failed":
+        conclusion = _conclusion_ja(result.latest_run_conclusion)
+        headline = f"{name}の直近実行が{conclusion}しました"
+        what = f"直近の実行結果は{conclusion}で、連続 {result.consecutive_failures} 回です。"
+        if result.consecutive_failures >= 2:
+            severity, label, icon, color, action = (
+                "critical",
+                "対応が必要",
+                "🔴",
+                0xE74C3C,
+                common_manual,
+            )
+    elif result.code == "run_stuck":
+        headline = f"{name}の処理が長引いています"
+        what = result.detail
+    elif result.code == "workflow_disabled":
+        headline = f"{name}の定期実行が無効になっています"
+        what = "GitHub Actionsのワークフローが無効で、次回の自動実行を待てない状態です。"
+        severity, label, icon, color, action = (
+            "critical",
+            "対応が必要",
+            "🔴",
+            0xE74C3C,
+            common_manual,
+        )
+        automatic = "全体監視番だけでは有効化できないため、自動復旧はできません。"
+    elif result.code == "never_run":
+        headline = f"{name}に実行履歴がありません"
+        what = "ワークフローはありますが、一度も動いた記録を確認できません。"
+        severity, label, icon, color, action = (
+            "critical",
+            "対応が必要",
+            "🔴",
+            0xE74C3C,
+            common_manual,
+        )
+    elif result.code == "never_succeeded":
+        headline = f"{name}が一度も正常終了していません"
+        what = "実行履歴はありますが、正常終了した記録を確認できません。"
+        severity, label, icon, color, action = (
+            "critical",
+            "対応が必要",
+            "🔴",
+            0xE74C3C,
+            common_manual,
+        )
+    else:
+        headline = f"{name}で異常を検知しました"
+        what = result.detail
+
+    return AlertExplanation(
+        severity=severity,
+        icon=icon,
+        label=label,
+        headline=headline,
+        what_happened=what,
+        impact=impact,
+        automatic_action=automatic,
+        user_action=action,
+        color=color,
+    )
+
+
 def index_open_incidents(issues: Iterable[dict[str, Any]], targets: Iterable[Target]) -> dict[str, dict[str, Any]]:
     """開いている Issue を監視対象キーへ対応付ける。"""
 
@@ -392,73 +590,126 @@ def index_open_incidents(issues: Iterable[dict[str, Any]], targets: Iterable[Tar
 
 
 def plan_incidents(results: Iterable[Health], open_incidents: dict[str, dict[str, Any]]) -> list[IncidentEvent]:
-    """新規異常と復旧だけを抽出し、継続中の異常は通知しない。"""
+    """新規異常・通知形式の更新・復旧だけを抽出する。"""
 
     events: list[IncidentEvent] = []
     for result in results:
         existing = open_incidents.get(result.target.key)
         if not result.healthy and existing is None:
             events.append(IncidentEvent("opened", result))
+        elif (
+            not result.healthy
+            and existing is not None
+            and alert_version_marker() not in str(existing.get("body") or "")
+        ):
+            events.append(IncidentEvent("updated", result, int(existing["number"])))
         elif result.healthy and existing is not None:
             events.append(IncidentEvent("recovered", result, int(existing["number"])))
     return events
 
 
 def issue_body(result: Health) -> str:
+    explanation = explain_health(result)
     run_link = result.latest_run_url or result.target.actions_url
     return "\n".join(
         [
             issue_marker(result.target),
-            "## 監視ツールの異常を検知",
+            alert_version_marker(),
+            f"## {explanation.icon} {explanation.label}：{explanation.headline}",
             "",
-            f"- 対象: **{result.target.name}**",
+            "### 何が起きた？",
+            explanation.what_happened,
+            "",
+            "### 影響",
+            explanation.impact,
+            "",
+            "### 自動でやること",
+            explanation.automatic_action,
+            "",
+            "### おまえがやること",
+            explanation.user_action,
+            "",
+            f"[詳しい実行履歴を開く]({run_link})",
+            "",
+            "<details><summary>技術情報</summary>",
+            "",
+            f"- 目的: {result.target.purpose}",
             f"- リポジトリ: `{result.target.repository}`",
             f"- ワークフロー: `{result.target.workflow}`",
             f"- 種類: `{result.code}`",
-            f"- 内容: {result.detail}",
-            f"- 検知時刻（UTC）: `{result.checked_at}`",
-            f"- [Actionsを開く]({run_link})",
+            f"- 元の判定: {result.detail}",
+            f"- 検知時刻: {format_jst(result.checked_at)}（日本時間）",
+            "",
+            "</details>",
             "",
             "復旧を確認すると、このIssueは監視番が自動で閉じます。",
         ]
     )
 
 
+def build_discord_payload(
+    events: Iterable[IncidentEvent], test: bool = False
+) -> dict[str, Any]:
+    """Discord通知を、状況・影響・自動対応・ユーザー行動の順で組み立てる。"""
+
+    embeds: list[dict[str, Any]] = []
+    if test:
+        embeds.append(
+            {
+                "title": "✅ 通知テスト成功",
+                "description": (
+                    "**何が起きた？**\nDiscordへの通知経路を確認しました。\n\n"
+                    "**影響**\n異常はありません。\n\n"
+                    "**自動でやること**\n通常の監視を続けます。\n\n"
+                    "**おまえがやること**\n何もしなくてOKです。"
+                ),
+                "color": 0x2ECC71,
+            }
+        )
+    else:
+        for event in events:
+            explanation = explain_health(event.health)
+            run_url = event.health.latest_run_url or event.health.target.actions_url
+            update_note = (
+                "\n\n_前の警告を、判断しやすい説明に更新しました。_"
+                if event.kind == "updated"
+                else ""
+            )
+            embeds.append(
+                {
+                    "title": (
+                        f"{explanation.icon} {explanation.label}："
+                        f"{explanation.headline}"
+                    )[:256],
+                    "description": (
+                        f"**何が起きた？**\n{explanation.what_happened}\n\n"
+                        f"**影響**\n{explanation.impact}\n\n"
+                        f"**自動でやること**\n{explanation.automatic_action}\n\n"
+                        f"**おまえがやること**\n{explanation.user_action}\n\n"
+                        f"[詳しい実行履歴（GitHub）]({run_url})"
+                        f"{update_note}"
+                    )[:4096],
+                    "color": explanation.color,
+                    "footer": {
+                        "text": "同じ内容は連投しません。復旧した時に通知します。"
+                    },
+                }
+            )
+
+    return {
+        "username": "監視ツール監視番",
+        "allowed_mentions": {"parse": []},
+        "embeds": embeds[:10],
+    }
+
+
 def send_discord(webhook_url: str, events: Iterable[IncidentEvent], test: bool = False) -> None:
     """状態変化を1通へまとめる。Webhook URL 自体はログへ絶対に出さない。"""
 
-    if test:
-        title = "✅ 監視ツール監視番：テスト成功"
-        description = "Discordへの通知経路は正常です。"
-        color = 0x2ECC71
-    else:
-        event_list = list(events)
-        if not event_list:
-            return
-        lines: list[str] = []
-        has_failure = False
-        for event in event_list:
-            if event.kind == "opened":
-                has_failure = True
-                icon = "🔴"
-                label = "異常"
-            else:
-                icon = "🟢"
-                label = "復旧"
-            run_url = event.health.latest_run_url or event.health.target.actions_url
-            lines.append(
-                f"{icon} **{label}: {event.health.target.name}**\n"
-                f"{event.health.detail}\n[Actionsを開く]({run_url})"
-            )
-        title = "監視ツール群の状態が変わりました"
-        description = "\n\n".join(lines)[:4000]
-        color = 0xE74C3C if has_failure else 0x2ECC71
-
-    payload = {
-        "username": "監視ツール監視番",
-        "allowed_mentions": {"parse": []},
-        "embeds": [{"title": title, "description": description, "color": color}],
-    }
+    event_list = list(events)
+    if not test and not event_list:
+        return
+    payload = build_discord_payload(event_list, test=test)
     request = urllib.request.Request(
         webhook_url,
         data=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
@@ -487,15 +738,26 @@ def apply_incidents(
                 issue_body(result),
             )
             print(f"INCIDENT_OPENED target={result.target.key} code={result.code}")
+        elif event.kind == "updated":
+            assert event.issue_number is not None
+            client.update_issue(
+                home_repository,
+                event.issue_number,
+                f"{ISSUE_PREFIX} {result.target.name}",
+                issue_body(result),
+            )
+            print(f"INCIDENT_UPDATED target={result.target.key} code={result.code}")
         else:
             assert event.issue_number is not None
+            explanation = explain_health(result)
             client.comment_issue(
                 home_repository,
                 event.issue_number,
                 (
-                    "## 復旧を確認\n\n"
-                    f"{result.detail}\n\n"
-                    f"確認時刻（UTC）: `{result.checked_at}`"
+                    f"## {explanation.icon} {explanation.headline}\n\n"
+                    f"{explanation.what_happened}\n\n"
+                    f"**おまえがやること:** {explanation.user_action}\n\n"
+                    f"確認時刻: {format_jst(result.checked_at)}（日本時間）"
                 ),
             )
             client.close_issue(home_repository, event.issue_number)
@@ -568,6 +830,12 @@ def main(argv: list[str] | None = None) -> int:
                 f"FLEET_WATCHDOG level={level} target={result.target.key} "
                 f"code={result.code} detail={json.dumps(result.detail, ensure_ascii=False)}"
             )
+            if not result.healthy:
+                explanation = explain_health(result)
+                print(
+                    f"::warning title={explanation.headline}::"
+                    f"{explanation.what_happened} {explanation.user_action}"
+                )
         write_outputs(results, args.report)
 
         # dry-run でも既存 Issue は読み、何が新規通知・復旧になるかまでは確認する。
@@ -585,7 +853,10 @@ def main(argv: list[str] | None = None) -> int:
                 send_discord(webhook_url, events)
             apply_incidents(client, home_repository, events)
 
-        return 0 if all(result.healthy for result in results) else 1
+        # 監視対象の異常はIssueとDiscordで扱う。ここを失敗終了にすると、
+        # GitHubが「全ジョブ失敗」という意味不明な二重通知を送るため常に成功扱い。
+        # 監視番自身が壊れて例外になった時だけ、下の except で終了コード2を返す。
+        return 0
     except Exception as exc:
         print(f"FLEET_WATCHDOG_FATAL {exc}", file=sys.stderr)
         return 2
