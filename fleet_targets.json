@@ -1,0 +1,46 @@
+{
+  "targets": [
+    {
+      "name": "MixChannel勢い監視（本体）",
+      "repository": "nekoromme/mixch-ranking-monitor",
+      "workflow": "ranking-monitor.yml",
+      "max_success_age_minutes": 25,
+      "max_run_minutes": 15
+    },
+    {
+      "name": "MixChannel勢い監視（5分リレー）",
+      "repository": "nekoromme/mixch-ranking-monitor",
+      "workflow": "relay.yml",
+      "max_success_age_minutes": 25,
+      "max_run_minutes": 12
+    },
+    {
+      "name": "MixChannel勢い監視（停止監視）",
+      "repository": "nekoromme/mixch-ranking-monitor",
+      "workflow": "watchdog.yml",
+      "max_success_age_minutes": 25,
+      "max_run_minutes": 15
+    },
+    {
+      "name": "トレカ抽選・発売監視",
+      "repository": "nekoromme/tcg-box-monitor-public",
+      "workflow": "monitor.yml",
+      "max_success_age_minutes": 600,
+      "max_run_minutes": 75
+    },
+    {
+      "name": "MixChannelアーカイブ監視",
+      "repository": "nekoromme/mixch-archive-monitor-public",
+      "workflow": "schedule.yml",
+      "max_success_age_minutes": 780,
+      "max_run_minutes": 45
+    },
+    {
+      "name": "高額抽選監視（RICOH）",
+      "repository": "nekoromme/high-value-lottery-monitor",
+      "workflow": "monitor.yml",
+      "max_success_age_minutes": 150,
+      "max_run_minutes": 30
+    }
+  ]
+}
