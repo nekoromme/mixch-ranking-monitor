@@ -43,7 +43,7 @@ jobs:
 
     steps:
       - name: 監視番を取得
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: 全監視ツールを健康診断
         shell: bash
@@ -64,7 +64,7 @@ jobs:
 
       - name: 判定結果を保存
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: fleet-watchdog-report-${{ github.run_id }}
           path: fleet-watchdog-report.json
