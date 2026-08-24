@@ -1,0 +1,66 @@
+name: 全監視ツール停止監視
+
+on:
+  schedule:
+    # 毎時の混雑しやすい0分を避け、日本時間でも15分おきに確認する。
+    - cron: "9,24,39,54 * * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "通知・Issue変更をせず判定だけ確認する"
+        required: true
+        type: boolean
+        default: true
+      test_notification:
+        description: "Discordへテスト通知を1件送る"
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+concurrency:
+  group: fleet-watchdog
+  cancel-in-progress: false
+
+jobs:
+  check-all-monitors:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      PYTHONUNBUFFERED: "1"
+
+    steps:
+      - name: 監視番を取得
+        uses: actions/checkout@v4
+
+      - name: 全監視ツールを健康診断
+        shell: bash
+        run: |
+          ARGS=(--targets fleet_targets.json --report fleet-watchdog-report.json)
+
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" \
+             && "${{ inputs.dry_run }}" == "true" ]]; then
+            ARGS+=(--dry-run)
+          fi
+
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" \
+             && "${{ inputs.test_notification }}" == "true" ]]; then
+            ARGS+=(--test-notification)
+          fi
+
+          python3 -m src.fleet_watchdog "${ARGS[@]}"
+
+      - name: 判定結果を保存
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fleet-watchdog-report-${{ github.run_id }}
+          path: fleet-watchdog-report.json
+          if-no-files-found: warn
+          retention-days: 30
