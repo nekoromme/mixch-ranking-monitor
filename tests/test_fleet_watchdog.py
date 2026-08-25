@@ -193,19 +193,26 @@ class AlertMessageTests(unittest.TestCase):
         )
         explanation = explain_health(health)
         self.assertEqual(explanation.severity, "critical")
-        self.assertIn("GitHubを操作する必要はありません", explanation.user_action)
+        self.assertEqual(explanation.user_action, "この通知をそのままわたしに送ってください。")
 
-    def test_discord_alert_has_four_plain_language_sections(self) -> None:
+    def test_discord_alert_has_only_situation_and_user_action(self) -> None:
         event = IncidentEvent("opened", self.stale_health())
         payload = build_discord_payload([event])
-        description = payload["embeds"][0]["description"]
-        for heading in ("何が起きた？", "影響", "自動でやること", "おまえがやること"):
+        embed = payload["embeds"][0]
+        description = embed["description"]
+        for heading in ("何が起きた", "おまえがやること"):
             self.assertIn(heading, description)
+        for removed_heading in ("影響", "自動でやること"):
+            self.assertNotIn(removed_heading, description)
+        self.assertEqual(embed["url"], self.stale_health().latest_run_url)
 
     def test_issue_uses_current_format_marker(self) -> None:
         body = issue_body(self.stale_health())
         self.assertIn(alert_version_marker(), body)
+        self.assertIn("### 何が起きた", body)
         self.assertIn("### おまえがやること", body)
+        self.assertNotIn("### 影響", body)
+        self.assertNotIn("### 自動でやること", body)
 
 
 class ConfigTests(unittest.TestCase):

@@ -27,7 +27,7 @@ JST = timezone(timedelta(hours=9))
 API_VERSION = "2022-11-28"
 USER_AGENT = "nekoromme-fleet-watchdog/1.0"
 ISSUE_PREFIX = "[監視ツール異常]"
-ALERT_FORMAT_VERSION = "2"
+ALERT_FORMAT_VERSION = "3"
 
 
 class WatchdogError(RuntimeError):
@@ -461,21 +461,15 @@ def explain_health(result: Health) -> AlertExplanation:
             icon="🟢",
             label="復旧",
             headline=f"{name}は復旧しました",
-            what_happened=f"正常に動いていることを確認しました。{success}",
+            what_happened=f"正常に戻りました。{success}",
             impact="現在は正常です。通知や更新が遅れる可能性は解消しました。",
             automatic_action="このまま通常どおり監視を続けます。",
             user_action="何もしなくてOKです。",
             color=0x2ECC71,
         )
 
-    common_wait = (
-        "今は何もしなくてOKです。1時間たっても復旧通知が来なければ、"
-        "この通知をそのままわたしに送ってください。"
-    )
-    common_manual = (
-        "この通知をそのままわたしに送ってください。"
-        "おまえがGitHubを操作する必要はありません。"
-    )
+    common_wait = "何もしなくてOKです。"
+    common_manual = "この通知をそのままわたしに送ってください。"
 
     severity = "warning"
     label = "様子見"
@@ -490,10 +484,7 @@ def explain_health(result: Health) -> AlertExplanation:
 
     if result.code == "api_error":
         headline = f"{name}の状態確認に失敗しました"
-        what = (
-            "GitHubから実行状況を取得できませんでした。"
-            "監視対象そのものが止まったとはまだ判断していません。"
-        )
+        what = "GitHubから状態を取得できませんでした。監視対象の停止は未確認です。"
         impact = "現時点では実害不明です。次の確認結果を待ちます。"
         automatic = "全体監視番が15分後にもう一度確認します。"
     elif result.code == "success_stale":
@@ -501,8 +492,8 @@ def explain_health(result: Health) -> AlertExplanation:
         headline = f"{name}が予定どおり動いていません"
         what = (
             f"最後の正常終了は {format_jst(result.last_success_at)}。"
-            f"そこから {age if age is not None else '不明'} 分経過し、"
-            f"通常の待ち時間 {result.target.max_success_age_minutes} 分を超えました。"
+            f"{age if age is not None else '不明'}分動いておらず、"
+            f"通常の待ち時間{result.target.max_success_age_minutes}分を超えました。"
         )
         if age is not None and age > result.target.max_success_age_minutes * 2:
             severity, label, icon, color, action = (
@@ -515,7 +506,7 @@ def explain_health(result: Health) -> AlertExplanation:
     elif result.code == "latest_run_failed":
         conclusion = _conclusion_ja(result.latest_run_conclusion)
         headline = f"{name}の直近実行が{conclusion}しました"
-        what = f"直近の実行結果は{conclusion}で、連続 {result.consecutive_failures} 回です。"
+        what = f"直近の実行が{conclusion}しました（連続{result.consecutive_failures}回）。"
         if result.consecutive_failures >= 2:
             severity, label, icon, color, action = (
                 "critical",
@@ -529,7 +520,7 @@ def explain_health(result: Health) -> AlertExplanation:
         what = result.detail
     elif result.code == "workflow_disabled":
         headline = f"{name}の定期実行が無効になっています"
-        what = "GitHub Actionsのワークフローが無効で、次回の自動実行を待てない状態です。"
+        what = "GitHubの定期実行が無効になっています。"
         severity, label, icon, color, action = (
             "critical",
             "対応が必要",
@@ -540,7 +531,7 @@ def explain_health(result: Health) -> AlertExplanation:
         automatic = "全体監視番だけでは有効化できないため、自動復旧はできません。"
     elif result.code == "never_run":
         headline = f"{name}に実行履歴がありません"
-        what = "ワークフローはありますが、一度も動いた記録を確認できません。"
+        what = "定期実行が一度も動いた記録を確認できません。"
         severity, label, icon, color, action = (
             "critical",
             "対応が必要",
@@ -550,7 +541,7 @@ def explain_health(result: Health) -> AlertExplanation:
         )
     elif result.code == "never_succeeded":
         headline = f"{name}が一度も正常終了していません"
-        what = "実行履歴はありますが、正常終了した記録を確認できません。"
+        what = "正常終了した記録を一度も確認できません。"
         severity, label, icon, color, action = (
             "critical",
             "対応が必要",
@@ -617,14 +608,8 @@ def issue_body(result: Health) -> str:
             alert_version_marker(),
             f"## {explanation.icon} {explanation.label}：{explanation.headline}",
             "",
-            "### 何が起きた？",
+            "### 何が起きた",
             explanation.what_happened,
-            "",
-            "### 影響",
-            explanation.impact,
-            "",
-            "### 自動でやること",
-            explanation.automatic_action,
             "",
             "### おまえがやること",
             explanation.user_action,
@@ -650,7 +635,7 @@ def issue_body(result: Health) -> str:
 def build_discord_payload(
     events: Iterable[IncidentEvent], test: bool = False
 ) -> dict[str, Any]:
-    """Discord通知を、状況・影響・自動対応・ユーザー行動の順で組み立てる。"""
+    """Discord通知を「何が起きた」「ユーザーがやること」だけで組み立てる。"""
 
     embeds: list[dict[str, Any]] = []
     if test:
@@ -658,9 +643,7 @@ def build_discord_payload(
             {
                 "title": "✅ 通知テスト成功",
                 "description": (
-                    "**何が起きた？**\nDiscordへの通知経路を確認しました。\n\n"
-                    "**影響**\n異常はありません。\n\n"
-                    "**自動でやること**\n通常の監視を続けます。\n\n"
+                    "**何が起きた**\nDiscordへの通知経路は正常です。\n\n"
                     "**おまえがやること**\n何もしなくてOKです。"
                 ),
                 "color": 0x2ECC71,
@@ -670,11 +653,6 @@ def build_discord_payload(
         for event in events:
             explanation = explain_health(event.health)
             run_url = event.health.latest_run_url or event.health.target.actions_url
-            update_note = (
-                "\n\n_前の警告を、判断しやすい説明に更新しました。_"
-                if event.kind == "updated"
-                else ""
-            )
             embeds.append(
                 {
                     "title": (
@@ -682,17 +660,11 @@ def build_discord_payload(
                         f"{explanation.headline}"
                     )[:256],
                     "description": (
-                        f"**何が起きた？**\n{explanation.what_happened}\n\n"
-                        f"**影響**\n{explanation.impact}\n\n"
-                        f"**自動でやること**\n{explanation.automatic_action}\n\n"
-                        f"**おまえがやること**\n{explanation.user_action}\n\n"
-                        f"[詳しい実行履歴（GitHub）]({run_url})"
-                        f"{update_note}"
+                        f"**何が起きた**\n{explanation.what_happened}\n\n"
+                        f"**おまえがやること**\n{explanation.user_action}"
                     )[:4096],
+                    "url": run_url,
                     "color": explanation.color,
-                    "footer": {
-                        "text": "同じ内容は連投しません。復旧した時に通知します。"
-                    },
                 }
             )
 
