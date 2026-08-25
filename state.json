@@ -3,12 +3,26 @@
     "last_heartbeat_at": "2026-08-19T09:13:20Z"
   },
   "night_candidates": {
+    "12090027": {
+      "broadcaster_name": "もこ☁2:00ゴジャ",
+      "first_seen_at": "2026-08-25T13:09:28Z",
+      "last_seen_at": "2026-08-25T13:09:28Z",
+      "max_momentum": 276,
+      "url": "https://mixch.tv/u/12090027/live"
+    },
     "18946717": {
       "broadcaster_name": "(すい)#RBC",
       "first_seen_at": "2026-08-25T13:04:15Z",
       "last_seen_at": "2026-08-25T13:04:15Z",
       "max_momentum": 155,
       "url": "https://mixch.tv/u/18946717/live"
+    },
+    "18954638": {
+      "broadcaster_name": "MOKA #プラチナAD",
+      "first_seen_at": "2026-08-25T13:09:28Z",
+      "last_seen_at": "2026-08-25T13:09:28Z",
+      "max_momentum": 226,
+      "url": "https://mixch.tv/u/18954638/live"
     }
   },
   "notifications": {
