@@ -2,56 +2,19 @@
   "metadata": {
     "last_heartbeat_at": "2026-08-19T09:13:20Z"
   },
-  "night_candidates": {
-    "12090027": {
-      "broadcaster_name": "もこ☁2:00ゴジャ",
-      "first_seen_at": "2026-08-25T13:09:28Z",
-      "last_seen_at": "2026-08-25T13:09:28Z",
-      "max_momentum": 276,
-      "url": "https://mixch.tv/u/12090027/live"
-    },
-    "16903258": {
-      "broadcaster_name": "サクラバシ919 公式",
-      "first_seen_at": "2026-08-25T14:11:40Z",
-      "last_seen_at": "2026-08-25T15:08:50Z",
-      "max_momentum": 354,
-      "url": "https://mixch.tv/u/16903258/live"
-    },
-    "18390830": {
-      "broadcaster_name": "れな❄️九州ﾌﾘﾍﾟﾊ",
-      "first_seen_at": "2026-08-25T13:35:19Z",
-      "last_seen_at": "2026-08-25T13:35:19Z",
-      "max_momentum": 212,
-      "url": "https://mixch.tv/u/18390830/live"
-    },
-    "18946717": {
-      "broadcaster_name": "(すい)#RBC",
-      "first_seen_at": "2026-08-25T13:04:15Z",
-      "last_seen_at": "2026-08-25T13:04:15Z",
-      "max_momentum": 155,
-      "url": "https://mixch.tv/u/18946717/live"
-    },
-    "18954638": {
-      "broadcaster_name": "MOKA #プラチナAD",
-      "first_seen_at": "2026-08-25T13:09:28Z",
-      "last_seen_at": "2026-08-25T13:09:28Z",
-      "max_momentum": 226,
-      "url": "https://mixch.tv/u/18954638/live"
-    },
-    "18972235": {
-      "broadcaster_name": "めい",
-      "first_seen_at": "2026-08-25T13:35:19Z",
-      "last_seen_at": "2026-08-25T13:35:19Z",
-      "max_momentum": 154,
-      "url": "https://mixch.tv/u/18972235/live"
-    }
-  },
+  "night_candidates": {},
   "notifications": {
     "11185663": {
       "broadcaster_name": "べいべーあゆ【IRUYA",
       "last_notified_at": "2026-08-19T22:00:12Z",
       "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/11185663/live"
+    },
+    "12090027": {
+      "broadcaster_name": "もこ☁2:00ゴジャ",
+      "last_notified_at": "2026-08-25T22:03:57Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/12090027/live"
     },
     "15399572": {
       "broadcaster_name": "ももにゃんJKミスコン準グランプリ",
@@ -90,7 +53,7 @@
     },
     "16903258": {
       "broadcaster_name": "サクラバシ919 公式",
-      "last_notified_at": "2026-08-21T22:03:42Z",
+      "last_notified_at": "2026-08-25T22:03:57Z",
       "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/16903258/live"
     },
@@ -226,6 +189,12 @@
       "broadcaster_name": "おでこのねね#JCﾌｧｲﾅﾘｽ",
       "last_notified_at": "2026-08-17T10:42:04Z",
       "url": "https://mixch.tv/u/18379900/live"
+    },
+    "18390830": {
+      "broadcaster_name": "れな❄️九州ﾌﾘﾍﾟﾊ",
+      "last_notified_at": "2026-08-25T22:03:57Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18390830/live"
     },
     "18467780": {
       "broadcaster_name": "あいみ#サツコレ",
@@ -511,8 +480,9 @@
       "url": "https://mixch.tv/u/18946500/live"
     },
     "18946717": {
-      "broadcaster_name": "(すい)ｶﾞRBC",
-      "last_notified_at": "2026-08-17T12:04:37Z",
+      "broadcaster_name": "(すい)#RBC",
+      "last_notified_at": "2026-08-25T22:03:57Z",
+      "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/18946717/live"
     },
     "18946786": {
@@ -602,7 +572,7 @@
     },
     "18954638": {
       "broadcaster_name": "MOKA #プラチナAD",
-      "last_notified_at": "2026-08-24T22:03:30Z",
+      "last_notified_at": "2026-08-25T22:03:57Z",
       "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/18954638/live"
     },
@@ -754,6 +724,12 @@
       "broadcaster_name": "@k2014✨",
       "last_notified_at": "2026-08-25T07:01:24Z",
       "url": "https://mixch.tv/u/18972226/live"
+    },
+    "18972235": {
+      "broadcaster_name": "めい",
+      "last_notified_at": "2026-08-25T22:03:57Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18972235/live"
     }
   },
   "version": 1
