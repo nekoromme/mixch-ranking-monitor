@@ -5,12 +5,14 @@ import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from unittest.mock import patch
 
 from src.fleet_watchdog import (
     Health,
     IncidentEvent,
     Target,
     WatchdogError,
+    action_requirement_marker,
     alert_version_marker,
     build_discord_payload,
     evaluate_target,
@@ -20,6 +22,7 @@ from src.fleet_watchdog import (
     issue_marker,
     load_targets,
     plan_incidents,
+    send_discord,
 )
 
 
@@ -139,10 +142,50 @@ class IncidentPlanningTests(unittest.TestCase):
 
     def test_continuing_failure_does_not_repeat(self) -> None:
         open_incidents = {
-            TARGET.key: {"number": 12, "body": alert_version_marker()}
+            TARGET.key: {
+                "number": 12,
+                "body": f"{alert_version_marker()}\n{action_requirement_marker(False)}",
+            }
         }
         events = plan_incidents([self.health(False)], open_incidents)
         self.assertEqual(events, [])
+
+    def test_warning_escalation_to_action_required_updates_once(self) -> None:
+        critical = Health(
+            target=TARGET,
+            healthy=False,
+            code="latest_run_failed",
+            detail="連続失敗",
+            checked_at=NOW.isoformat(),
+            latest_run_conclusion="failure",
+            consecutive_failures=2,
+        )
+        open_incidents = {
+            TARGET.key: {
+                "number": 12,
+                "body": f"{alert_version_marker()}\n{action_requirement_marker(False)}",
+            }
+        }
+        events = plan_incidents([critical], open_incidents)
+        self.assertEqual([event.kind for event in events], ["updated"])
+
+    def test_action_required_incident_does_not_repeat(self) -> None:
+        critical = Health(
+            target=TARGET,
+            healthy=False,
+            code="latest_run_failed",
+            detail="連続失敗",
+            checked_at=NOW.isoformat(),
+            latest_run_conclusion="failure",
+            consecutive_failures=2,
+        )
+        open_incidents = {
+            TARGET.key: {
+                "number": 12,
+                "body": f"{alert_version_marker()}\n{action_requirement_marker(True)}",
+            }
+        }
+        self.assertEqual(plan_incidents([critical], open_incidents), [])
 
     def test_old_alert_format_is_updated_once(self) -> None:
         open_incidents = {TARGET.key: {"number": 12, "body": "古い通知"}}
@@ -175,6 +218,18 @@ class AlertMessageTests(unittest.TestCase):
             last_success_age_minutes=age,
         )
 
+    def critical_health(self) -> Health:
+        return Health(
+            target=TARGET,
+            healthy=False,
+            code="latest_run_failed",
+            detail="連続失敗",
+            checked_at=NOW.isoformat(),
+            latest_run_url="https://github.com/example/monitor/actions/runs/2",
+            latest_run_conclusion="failure",
+            consecutive_failures=2,
+        )
+
     def test_stale_once_is_warning_and_requires_no_immediate_action(self) -> None:
         explanation = explain_health(self.stale_health())
         self.assertEqual(explanation.severity, "warning")
@@ -182,21 +237,13 @@ class AlertMessageTests(unittest.TestCase):
         self.assertIn("2026/08/24", explanation.what_happened)
 
     def test_repeated_failure_is_critical(self) -> None:
-        health = Health(
-            target=TARGET,
-            healthy=False,
-            code="latest_run_failed",
-            detail="連続失敗",
-            checked_at=NOW.isoformat(),
-            latest_run_conclusion="failure",
-            consecutive_failures=2,
-        )
-        explanation = explain_health(health)
+        explanation = explain_health(self.critical_health())
         self.assertEqual(explanation.severity, "critical")
+        self.assertTrue(explanation.requires_user_action)
         self.assertEqual(explanation.user_action, "この通知をそのままわたしに送ってください。")
 
-    def test_discord_alert_has_only_situation_and_user_action(self) -> None:
-        event = IncidentEvent("opened", self.stale_health())
+    def test_actionable_discord_alert_has_only_situation_and_user_action(self) -> None:
+        event = IncidentEvent("opened", self.critical_health())
         payload = build_discord_payload([event])
         embed = payload["embeds"][0]
         description = embed["description"]
@@ -204,7 +251,30 @@ class AlertMessageTests(unittest.TestCase):
             self.assertIn(heading, description)
         for removed_heading in ("影響", "自動でやること"):
             self.assertNotIn(removed_heading, description)
-        self.assertEqual(embed["url"], self.stale_health().latest_run_url)
+        self.assertEqual(embed["url"], self.critical_health().latest_run_url)
+
+    def test_warning_and_recovery_do_not_create_discord_embeds(self) -> None:
+        warning = IncidentEvent("opened", self.stale_health())
+        recovery = IncidentEvent(
+            "recovered",
+            Health(
+                target=TARGET,
+                healthy=True,
+                code="healthy",
+                detail="正常",
+                checked_at=NOW.isoformat(),
+                last_success_at=stamp(1),
+            ),
+        )
+        self.assertEqual(build_discord_payload([warning, recovery])["embeds"], [])
+
+    @patch("src.fleet_watchdog.urllib.request.urlopen")
+    def test_non_actionable_event_does_not_call_discord(self, urlopen) -> None:
+        send_discord(
+            "https://discord.example/webhook",
+            [IncidentEvent("opened", self.stale_health())],
+        )
+        urlopen.assert_not_called()
 
     def test_issue_uses_current_format_marker(self) -> None:
         body = issue_body(self.stale_health())

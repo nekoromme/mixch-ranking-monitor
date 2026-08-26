@@ -83,7 +83,7 @@ class Health:
 
 @dataclass(frozen=True)
 class IncidentEvent:
-    """Issue と Discord に反映すべき、新規異常または復旧。"""
+    """Issue と、対応が必要ならDiscordにも反映する新規異常または復旧。"""
 
     kind: str  # "opened"、"updated" または "recovered"
     health: Health
@@ -103,6 +103,12 @@ class AlertExplanation:
     automatic_action: str
     user_action: str
     color: int
+
+    @property
+    def requires_user_action(self) -> bool:
+        """Discordへ知らせる必要がある、ユーザー対応必須の警告か。"""
+
+        return self.severity == "critical"
 
 
 def parse_github_time(value: str | None) -> datetime | None:
@@ -433,6 +439,11 @@ def alert_version_marker() -> str:
     return f"<!-- fleet-watchdog-alert-version:{ALERT_FORMAT_VERSION} -->"
 
 
+def action_requirement_marker(required: bool) -> str:
+    state = "required" if required else "none"
+    return f"<!-- fleet-watchdog-user-action:{state} -->"
+
+
 def _conclusion_ja(value: str | None) -> str:
     return {
         "failure": "失敗",
@@ -581,7 +592,7 @@ def index_open_incidents(issues: Iterable[dict[str, Any]], targets: Iterable[Tar
 
 
 def plan_incidents(results: Iterable[Health], open_incidents: dict[str, dict[str, Any]]) -> list[IncidentEvent]:
-    """新規異常・通知形式の更新・復旧だけを抽出する。"""
+    """新規異常・形式変更・対応要否の変化・復旧だけを抽出する。"""
 
     events: list[IncidentEvent] = []
     for result in results:
@@ -591,7 +602,13 @@ def plan_incidents(results: Iterable[Health], open_incidents: dict[str, dict[str
         elif (
             not result.healthy
             and existing is not None
-            and alert_version_marker() not in str(existing.get("body") or "")
+            and (
+                alert_version_marker() not in str(existing.get("body") or "")
+                or action_requirement_marker(
+                    explain_health(result).requires_user_action
+                )
+                not in str(existing.get("body") or "")
+            )
         ):
             events.append(IncidentEvent("updated", result, int(existing["number"])))
         elif result.healthy and existing is not None:
@@ -606,6 +623,7 @@ def issue_body(result: Health) -> str:
         [
             issue_marker(result.target),
             alert_version_marker(),
+            action_requirement_marker(explanation.requires_user_action),
             f"## {explanation.icon} {explanation.label}：{explanation.headline}",
             "",
             "### 何が起きた",
@@ -635,7 +653,7 @@ def issue_body(result: Health) -> str:
 def build_discord_payload(
     events: Iterable[IncidentEvent], test: bool = False
 ) -> dict[str, Any]:
-    """Discord通知を「何が起きた」「ユーザーがやること」だけで組み立てる。"""
+    """ユーザー対応が必要な事象だけをDiscord通知にする。"""
 
     embeds: list[dict[str, Any]] = []
     if test:
@@ -652,6 +670,8 @@ def build_discord_payload(
     else:
         for event in events:
             explanation = explain_health(event.health)
+            if not explanation.requires_user_action:
+                continue
             run_url = event.health.latest_run_url or event.health.target.actions_url
             embeds.append(
                 {
@@ -676,12 +696,14 @@ def build_discord_payload(
 
 
 def send_discord(webhook_url: str, events: Iterable[IncidentEvent], test: bool = False) -> None:
-    """状態変化を1通へまとめる。Webhook URL 自体はログへ絶対に出さない。"""
+    """対応必須の状態変化だけを1通へまとめる。Webhook URLはログへ出さない。"""
 
     event_list = list(events)
     if not test and not event_list:
         return
     payload = build_discord_payload(event_list, test=test)
+    if not payload["embeds"]:
+        return
     request = urllib.request.Request(
         webhook_url,
         data=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
@@ -819,13 +841,14 @@ def main(argv: list[str] | None = None) -> int:
             for event in events:
                 print(f"DRY_RUN event={event.kind} target={event.health.target.key}")
         else:
-            # Discord送信が失敗した場合はIssueを変えない。次回も同じ状態変化を
-            # 再送でき、通知だけ取りこぼす事故を防げる。
+            # 対応必須通知のDiscord送信が失敗した場合はIssueを変えない。
+            # 次回も同じ状態変化を再送でき、重要通知だけ取りこぼす事故を防げる。
             if webhook_url and events:
                 send_discord(webhook_url, events)
             apply_incidents(client, home_repository, events)
 
-        # 監視対象の異常はIssueとDiscordで扱う。ここを失敗終了にすると、
+        # 監視対象の異常はIssueで扱い、対応必須時だけDiscordにも送る。
+        # ここを失敗終了にすると、
         # GitHubが「全ジョブ失敗」という意味不明な二重通知を送るため常に成功扱い。
         # 監視番自身が壊れて例外になった時だけ、下の except で終了コード2を返す。
         return 0
