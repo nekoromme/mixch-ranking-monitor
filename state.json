@@ -2,43 +2,7 @@
   "metadata": {
     "last_heartbeat_at": "2026-08-26T09:16:46Z"
   },
-  "night_candidates": {
-    "16534914": {
-      "broadcaster_name": "Reina‍♀",
-      "first_seen_at": "2026-08-26T13:04:40Z",
-      "last_seen_at": "2026-08-26T13:04:40Z",
-      "max_momentum": 166,
-      "url": "https://mixch.tv/u/16534914/live"
-    },
-    "17696747": {
-      "broadcaster_name": "とぅん #本日配信1.3",
-      "first_seen_at": "2026-08-26T13:30:40Z",
-      "last_seen_at": "2026-08-26T13:30:40Z",
-      "max_momentum": 161,
-      "url": "https://mixch.tv/u/17696747/live"
-    },
-    "17966308": {
-      "broadcaster_name": "楓来18時ﾟﾄﾝ開",
-      "first_seen_at": "2026-08-26T13:09:52Z",
-      "last_seen_at": "2026-08-26T13:09:52Z",
-      "max_momentum": 168,
-      "url": "https://mixch.tv/u/17966308/live"
-    },
-    "18788697": {
-      "broadcaster_name": "あやなjcミスコン2026",
-      "first_seen_at": "2026-08-26T14:48:28Z",
-      "last_seen_at": "2026-08-26T14:48:28Z",
-      "max_momentum": 188,
-      "url": "https://mixch.tv/u/18788697/live"
-    },
-    "18932495": {
-      "broadcaster_name": "本日1.4倍もね",
-      "first_seen_at": "2026-08-26T14:53:38Z",
-      "last_seen_at": "2026-08-26T14:53:38Z",
-      "max_momentum": 254,
-      "url": "https://mixch.tv/u/18932495/live"
-    }
-  },
+  "night_candidates": {},
   "notifications": {
     "10914555": {
       "broadcaster_name": "さちこアプデマイスタ",
@@ -81,8 +45,8 @@
       "url": "https://mixch.tv/u/16000840/live"
     },
     "16534914": {
-      "broadcaster_name": "Reina‍♀️塩スイー",
-      "last_notified_at": "2026-08-24T22:03:30Z",
+      "broadcaster_name": "Reina‍♀",
+      "last_notified_at": "2026-08-26T22:01:20Z",
       "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/16534914/live"
     },
@@ -138,6 +102,12 @@
       "last_notified_at": "2026-08-26T11:46:59Z",
       "url": "https://mixch.tv/u/17561869/live"
     },
+    "17696747": {
+      "broadcaster_name": "とぅん #本日配信1.3",
+      "last_notified_at": "2026-08-26T22:01:20Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/17696747/live"
+    },
     "17837380": {
       "broadcaster_name": "日20時 まー #サツコレ",
       "last_notified_at": "2026-08-16T04:42:21Z",
@@ -177,8 +147,9 @@
       "url": "https://mixch.tv/u/17959898/live"
     },
     "17966308": {
-      "broadcaster_name": "楓来ｶﾞﾁｲﾍMissPopGirl",
-      "last_notified_at": "2026-08-25T12:33:05Z",
+      "broadcaster_name": "楓来18時ﾟﾄﾝ開",
+      "last_notified_at": "2026-08-26T22:01:20Z",
+      "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/17966308/live"
     },
     "18014848": {
@@ -337,7 +308,8 @@
     },
     "18788697": {
       "broadcaster_name": "あやなjcミスコン2026",
-      "last_notified_at": "2026-08-25T11:35:54Z",
+      "last_notified_at": "2026-08-26T22:01:20Z",
+      "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/18788697/live"
     },
     "18801682": {
@@ -482,6 +454,12 @@
       "broadcaster_name": "ちさきJCミスコン2026",
       "last_notified_at": "2026-08-17T03:23:37Z",
       "url": "https://mixch.tv/u/18929468/live"
+    },
+    "18932495": {
+      "broadcaster_name": "本日1.4倍もね",
+      "last_notified_at": "2026-08-26T22:01:20Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18932495/live"
     },
     "18936473": {
       "broadcaster_name": "初日しょうこLARMEテミス",
