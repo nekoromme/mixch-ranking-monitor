@@ -16,7 +16,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field, replace
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Iterable
@@ -27,7 +27,7 @@ JST = timezone(timedelta(hours=9))
 API_VERSION = "2022-11-28"
 USER_AGENT = "nekoromme-fleet-watchdog/1.0"
 ISSUE_PREFIX = "[監視ツール異常]"
-ALERT_FORMAT_VERSION = "3"
+ALERT_FORMAT_VERSION = "4"
 
 
 class WatchdogError(RuntimeError):
@@ -46,6 +46,9 @@ class Target:
     purpose: str = "監視対象の定期処理"
     outage_impact: str = "この監視対象の通知や更新が遅れる可能性があります。"
     automatic_recovery: str = "次回の定期実行で自動的に再確認します。"
+    # 予備系の監視は、それ単体が遅れても本体が動いている限り利用者の操作は
+    # 不要。ここに指定した監視が1件でも正常なら、Discordの赤警告へ上げない。
+    user_action_requires_all_unhealthy: tuple[str, ...] = field(default_factory=tuple)
 
     @property
     def key(self) -> str:
@@ -74,6 +77,9 @@ class Health:
     last_success_at: str | None = None
     last_success_age_minutes: int | None = None
     consecutive_failures: int = 0
+    # 冗長な予備系だけが異常で、実処理を担う別経路が正常な場合に入る。
+    # 健康診断上の異常とIssue記録は維持しつつ、利用者向け赤警告だけ止める。
+    user_action_blocked_by: tuple[str, ...] = field(default_factory=tuple)
 
     def to_dict(self) -> dict[str, Any]:
         data = asdict(self)
@@ -230,7 +236,6 @@ class GitHubClient:
     def close_issue(self, repository: str, number: int) -> None:
         self.request("PATCH", f"/repos/{repository}/issues/{number}", {"state": "closed"})
 
-
 def load_targets(path: Path) -> list[Target]:
     """設定を読み、設定ミスを監視開始前にはっきり失敗させる。"""
 
@@ -243,6 +248,12 @@ def load_targets(path: Path) -> list[Target]:
     keys: set[str] = set()
     for index, item in enumerate(items, start=1):
         try:
+            raw_dependencies = item.get("user_action_requires_all_unhealthy", [])
+            if not isinstance(raw_dependencies, list) or not all(
+                isinstance(value, str) and value.strip() for value in raw_dependencies
+            ):
+                raise ValueError("user_action_requires_all_unhealthy は文字列の配列にしてください")
+
             target = Target(
                 name=str(item["name"]).strip(),
                 repository=str(item["repository"]).strip(),
@@ -258,6 +269,9 @@ def load_targets(path: Path) -> list[Target]:
                     item.get("automatic_recovery")
                     or "次回の定期実行で自動的に再確認します。"
                 ).strip(),
+                user_action_requires_all_unhealthy=tuple(
+                    value.strip() for value in raw_dependencies
+                ),
             )
         except (KeyError, TypeError, ValueError) as exc:
             raise WatchdogError(f"targets の {index} 件目が不正です: {exc}") from exc
@@ -277,6 +291,14 @@ def load_targets(path: Path) -> list[Target]:
             raise WatchdogError(f"監視対象が重複しています: {target.key}")
         keys.add(target.key)
         targets.append(target)
+
+    known_keys = {target.key for target in targets}
+    for target in targets:
+        unknown = set(target.user_action_requires_all_unhealthy) - known_keys
+        if unknown:
+            raise WatchdogError(
+                f"{target.key} の関連監視が targets にありません: {', '.join(sorted(unknown))}"
+            )
     return targets
 
 
@@ -400,6 +422,23 @@ def evaluate_target(client: GitHubClient, target: Target, now: datetime) -> Heal
     success_at = last_success.get("updated_at") or last_success.get("created_at")
     success_age = age_minutes(now, success_at)
     if success_age is None or success_age > target.max_success_age_minutes:
+        # 自動復旧で起動した実行が待機・実行中なら、その完了までは停止扱いに
+        # しない。これがないと全体監視番が15分おきに同じ実行を積み増す。
+        if active_runs:
+            newest_active = max(active_runs, key=_run_time)
+            active_age = age_minutes(now, newest_active.get("created_at")) or 0
+            return Health(
+                target=target,
+                healthy=True,
+                code="recovery_in_progress",
+                detail=f"再起動した処理の完了待ち（開始から {active_age} 分）",
+                checked_at=checked_at,
+                latest_run_url=newest_active.get("html_url"),
+                latest_run_status=str(newest_active.get("status")),
+                latest_run_conclusion=newest_active.get("conclusion"),
+                last_success_at=success_at,
+                last_success_age_minutes=success_age,
+            )
         return Health(
             target=target,
             healthy=False,
@@ -428,6 +467,29 @@ def evaluate_target(client: GitHubClient, target: Target, now: datetime) -> Heal
         last_success_at=success_at,
         last_success_age_minutes=success_age,
     )
+
+
+def apply_redundancy_rules(results: Iterable[Health]) -> list[Health]:
+    """予備系だけの停止を、利用者対応が必要な赤警告から除外する。"""
+
+    result_list = list(results)
+    by_key = {result.target.key: result for result in result_list}
+    adjusted: list[Health] = []
+    for result in result_list:
+        dependencies = result.target.user_action_requires_all_unhealthy
+        if result.healthy or not dependencies:
+            adjusted.append(result)
+            continue
+
+        healthy_paths = tuple(
+            by_key[key].target.name for key in dependencies if by_key[key].healthy
+        )
+        adjusted.append(
+            replace(result, user_action_blocked_by=healthy_paths)
+            if healthy_paths
+            else result
+        )
+    return adjusted
 
 
 def issue_marker(target: Target) -> str:
@@ -563,6 +625,23 @@ def explain_health(result: Health) -> AlertExplanation:
     else:
         headline = f"{name}で異常を検知しました"
         what = result.detail
+
+    # 予備系の大幅遅延だけで赤警告に上がっても、実処理の経路が正常なら
+    # 利用者が直すものはない。Issueには残し、Discordだけ静かにする。
+    if result.user_action_blocked_by:
+        healthy_names = "、".join(result.user_action_blocked_by)
+        severity, label, icon, color, action = (
+            "warning",
+            "自動対応中",
+            "🟡",
+            0xF1C40F,
+            common_wait,
+        )
+        impact = f"{healthy_names}は正常なため、現在の監視処理に実害はありません。"
+        automatic = (
+            f"全体監視番が15分おきに再確認します。"
+            f" {result.target.automatic_recovery}"
+        )
 
     return AlertExplanation(
         severity=severity,
@@ -817,7 +896,8 @@ def main(argv: list[str] | None = None) -> int:
             print("DISCORD_TEST_OK")
 
         now = datetime.now(UTC)
-        results = [evaluate_target(client, target, now) for target in targets]
+        raw_results = [evaluate_target(client, target, now) for target in targets]
+        results = apply_redundancy_rules(raw_results)
         for result in results:
             level = "OK" if result.healthy else "ERROR"
             print(

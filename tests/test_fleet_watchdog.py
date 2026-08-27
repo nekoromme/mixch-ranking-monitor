@@ -14,6 +14,7 @@ from src.fleet_watchdog import (
     WatchdogError,
     action_requirement_marker,
     alert_version_marker,
+    apply_redundancy_rules,
     build_discord_payload,
     evaluate_target,
     explain_health,
@@ -124,6 +125,83 @@ class HealthEvaluationTests(unittest.TestCase):
         )
         self.assertTrue(result.healthy)
         self.assertEqual(result.code, "first_run_in_progress")
+
+    def test_stale_success_with_fresh_active_recovery_is_temporarily_healthy(self) -> None:
+        runs = [
+            run(minutes_ago=2, status="queued", conclusion=None, run_id=2),
+            run(minutes_ago=31, conclusion="success", run_id=1),
+        ]
+        result = evaluate_target(FakeClient(runs), TARGET, NOW)
+        self.assertTrue(result.healthy)
+        self.assertEqual(result.code, "recovery_in_progress")
+
+
+class RedundancyAndRecoveryTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.main_target = Target(
+            name="本体",
+            repository="example/monitor",
+            workflow="main.yml",
+            max_success_age_minutes=30,
+            max_run_minutes=10,
+        )
+        self.relay_target = Target(
+            name="リレー",
+            repository="example/monitor",
+            workflow="relay.yml",
+            max_success_age_minutes=30,
+            max_run_minutes=10,
+        )
+        self.backup_target = Target(
+            name="予備の自動復旧",
+            repository="example/monitor",
+            workflow="watchdog.yml",
+            max_success_age_minutes=30,
+            max_run_minutes=10,
+            user_action_requires_all_unhealthy=(
+                self.main_target.key,
+                self.relay_target.key,
+            ),
+        )
+
+    def health(self, target: Target, healthy: bool) -> Health:
+        return Health(
+            target=target,
+            healthy=healthy,
+            code="healthy" if healthy else "success_stale",
+            detail="正常" if healthy else "停止",
+            checked_at=NOW.isoformat(),
+            last_success_at=stamp(100),
+            last_success_age_minutes=100,
+        )
+
+    def test_backup_alert_is_suppressed_while_real_monitor_paths_are_healthy(self) -> None:
+        results = apply_redundancy_rules(
+            [
+                self.health(self.main_target, True),
+                self.health(self.relay_target, True),
+                self.health(self.backup_target, False),
+            ]
+        )
+        backup = results[2]
+        self.assertEqual(backup.user_action_blocked_by, ("本体", "リレー"))
+        self.assertFalse(explain_health(backup).requires_user_action)
+        self.assertEqual(
+            build_discord_payload([IncidentEvent("opened", backup)])["embeds"],
+            [],
+        )
+
+    def test_backup_alert_is_actionable_when_all_real_monitor_paths_are_down(self) -> None:
+        results = apply_redundancy_rules(
+            [
+                self.health(self.main_target, False),
+                self.health(self.relay_target, False),
+                self.health(self.backup_target, False),
+            ]
+        )
+        self.assertEqual(results[2].user_action_blocked_by, ())
+        self.assertTrue(explain_health(results[2]).requires_user_action)
+
 
 
 class IncidentPlanningTests(unittest.TestCase):

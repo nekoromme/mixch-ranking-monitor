@@ -28,7 +28,11 @@
       "max_run_minutes": 15,
       "purpose": "勢い監視本体や5分リレーが止まっていないか確認し、必要なら再起動する予備の監視",
       "outage_impact": "勢い監視本体が止まったと確定したわけではありません。ただし本体が止まった時の自動復旧が遅れる可能性があります。",
-      "automatic_recovery": "GitHubの次回定期実行を待ち、この全体監視番が15分おきに復旧を確認します。"
+      "automatic_recovery": "GitHubの次回定期実行を待ち、この全体監視番が15分おきに復旧を確認します。",
+      "user_action_requires_all_unhealthy": [
+        "nekoromme/mixch-ranking-monitor/ranking-monitor.yml",
+        "nekoromme/mixch-ranking-monitor/relay.yml"
+      ]
     },
     {
       "name": "トレカ抽選・発売監視",
