@@ -2,7 +2,15 @@
   "metadata": {
     "last_heartbeat_at": "2026-08-26T09:16:46Z"
   },
-  "night_candidates": {},
+  "night_candidates": {
+    "17144708": {
+      "broadcaster_name": "芹沢ミユ#楽曲提1日まで",
+      "first_seen_at": "2026-08-27T13:02:01Z",
+      "last_seen_at": "2026-08-27T13:02:01Z",
+      "max_momentum": 166,
+      "url": "https://mixch.tv/u/17144708/live"
+    }
+  },
   "notifications": {
     "10914555": {
       "broadcaster_name": "さちこアプデマイスタ",
