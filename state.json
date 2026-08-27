@@ -2,43 +2,7 @@
   "metadata": {
     "last_heartbeat_at": "2026-08-26T09:16:46Z"
   },
-  "night_candidates": {
-    "16903258": {
-      "broadcaster_name": "サクラバシ919 公式",
-      "first_seen_at": "2026-08-27T14:04:13Z",
-      "last_seen_at": "2026-08-27T15:11:40Z",
-      "max_momentum": 242,
-      "url": "https://mixch.tv/u/16903258/live"
-    },
-    "17144708": {
-      "broadcaster_name": "芹沢ミユ#楽曲提1日まで",
-      "first_seen_at": "2026-08-27T13:02:01Z",
-      "last_seen_at": "2026-08-27T13:02:01Z",
-      "max_momentum": 166,
-      "url": "https://mixch.tv/u/17144708/live"
-    },
-    "17186919": {
-      "broadcaster_name": "のん❤️4周年♡",
-      "first_seen_at": "2026-08-27T13:38:14Z",
-      "last_seen_at": "2026-08-27T13:38:14Z",
-      "max_momentum": 156,
-      "url": "https://mixch.tv/u/17186919/live"
-    },
-    "18931827": {
-      "broadcaster_name": "ふじひな #Zipper掲載AD",
-      "first_seen_at": "2026-08-27T13:17:34Z",
-      "last_seen_at": "2026-08-27T13:17:34Z",
-      "max_momentum": 243,
-      "url": "https://mixch.tv/u/18931827/live"
-    },
-    "18949875": {
-      "broadcaster_name": "ひじかな#プラチナPJ",
-      "first_seen_at": "2026-08-27T15:22:04Z",
-      "last_seen_at": "2026-08-27T15:27:15Z",
-      "max_momentum": 194,
-      "url": "https://mixch.tv/u/18949875/live"
-    }
-  },
+  "night_candidates": {},
   "notifications": {
     "10914555": {
       "broadcaster_name": "さちこアプデマイスタ",
@@ -104,7 +68,7 @@
     },
     "16903258": {
       "broadcaster_name": "サクラバシ919 公式",
-      "last_notified_at": "2026-08-25T22:03:57Z",
+      "last_notified_at": "2026-08-27T22:01:01Z",
       "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/16903258/live"
     },
@@ -120,9 +84,15 @@
       "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/17114808/live"
     },
+    "17144708": {
+      "broadcaster_name": "芹沢ミユ#楽曲提1日まで",
+      "last_notified_at": "2026-08-27T22:01:01Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/17144708/live"
+    },
     "17186919": {
-      "broadcaster_name": "のん❤️",
-      "last_notified_at": "2026-08-18T22:02:55Z",
+      "broadcaster_name": "のん❤️4周年♡",
+      "last_notified_at": "2026-08-27T22:01:01Z",
       "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/17186919/live"
     },
@@ -550,6 +520,12 @@
       "last_notified_at": "2026-08-17T03:23:37Z",
       "url": "https://mixch.tv/u/18929468/live"
     },
+    "18931827": {
+      "broadcaster_name": "ふじひな #Zipper掲載AD",
+      "last_notified_at": "2026-08-27T22:01:01Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18931827/live"
+    },
     "18932495": {
       "broadcaster_name": "本日1.4倍もね",
       "last_notified_at": "2026-08-26T22:01:20Z",
@@ -652,8 +628,9 @@
       "url": "https://mixch.tv/u/18949345/live"
     },
     "18949875": {
-      "broadcaster_name": "ゲリラひじかな#プラチナPJ",
-      "last_notified_at": "2026-08-26T11:31:25Z",
+      "broadcaster_name": "ひじかな#プラチナPJ",
+      "last_notified_at": "2026-08-27T22:01:01Z",
+      "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/18949875/live"
     },
     "18949965": {
