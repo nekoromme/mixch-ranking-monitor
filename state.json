@@ -3,11 +3,18 @@
     "last_heartbeat_at": "2026-08-26T09:16:46Z"
   },
   "night_candidates": {
+    "18905015": {
+      "broadcaster_name": "パトン芦田右ャンボイ",
+      "first_seen_at": "2026-08-28T13:16:58Z",
+      "last_seen_at": "2026-08-28T13:16:58Z",
+      "max_momentum": 252,
+      "url": "https://mixch.tv/u/18905015/live"
+    },
     "18974688": {
       "broadcaster_name": "こはる",
       "first_seen_at": "2026-08-28T13:11:45Z",
-      "last_seen_at": "2026-08-28T13:11:45Z",
-      "max_momentum": 173,
+      "last_seen_at": "2026-08-28T13:16:58Z",
+      "max_momentum": 187,
       "url": "https://mixch.tv/u/18974688/live"
     }
   },
