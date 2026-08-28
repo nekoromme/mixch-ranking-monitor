@@ -2,7 +2,15 @@
   "metadata": {
     "last_heartbeat_at": "2026-08-26T09:16:46Z"
   },
-  "night_candidates": {},
+  "night_candidates": {
+    "18974688": {
+      "broadcaster_name": "こはる",
+      "first_seen_at": "2026-08-28T13:11:45Z",
+      "last_seen_at": "2026-08-28T13:11:45Z",
+      "max_momentum": 173,
+      "url": "https://mixch.tv/u/18974688/live"
+    }
+  },
   "notifications": {
     "10914555": {
       "broadcaster_name": "さちこアプデマイスタ",
