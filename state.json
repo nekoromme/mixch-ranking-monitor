@@ -2,22 +2,7 @@
   "metadata": {
     "last_heartbeat_at": "2026-08-26T09:16:46Z"
   },
-  "night_candidates": {
-    "18746434": {
-      "broadcaster_name": "1.3倍最終日前くろえ#キャンガル",
-      "first_seen_at": "2026-08-29T14:15:12Z",
-      "last_seen_at": "2026-08-29T14:15:12Z",
-      "max_momentum": 173,
-      "url": "https://mixch.tv/u/18746434/live"
-    },
-    "18949875": {
-      "broadcaster_name": "1.5 ひじかな#プラチナPJ",
-      "first_seen_at": "2026-08-29T13:23:24Z",
-      "last_seen_at": "2026-08-29T13:23:24Z",
-      "max_momentum": 151,
-      "url": "https://mixch.tv/u/18949875/live"
-    }
-  },
+  "night_candidates": {},
   "notifications": {
     "10914555": {
       "broadcaster_name": "さちこアプデマイスタ",
@@ -362,6 +347,12 @@
       "last_notified_at": "2026-08-27T11:33:51Z",
       "url": "https://mixch.tv/u/18746369/live"
     },
+    "18746434": {
+      "broadcaster_name": "1.3倍最終日前くろえ#キャンガル",
+      "last_notified_at": "2026-08-29T22:01:50Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18746434/live"
+    },
     "18750723": {
       "broadcaster_name": "くるみ#egg専属モデルAD",
       "last_notified_at": "2026-08-19T22:00:12Z",
@@ -697,8 +688,8 @@
       "url": "https://mixch.tv/u/18949345/live"
     },
     "18949875": {
-      "broadcaster_name": "ひじかな#プラチナPJ",
-      "last_notified_at": "2026-08-27T22:01:01Z",
+      "broadcaster_name": "1.5 ひじかな#プラチナPJ",
+      "last_notified_at": "2026-08-29T22:01:50Z",
       "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/18949875/live"
     },
