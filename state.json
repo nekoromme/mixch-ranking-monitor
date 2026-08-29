@@ -2,7 +2,15 @@
   "metadata": {
     "last_heartbeat_at": "2026-08-26T09:16:46Z"
   },
-  "night_candidates": {},
+  "night_candidates": {
+    "18949875": {
+      "broadcaster_name": "1.5 ひじかな#プラチナPJ",
+      "first_seen_at": "2026-08-29T13:23:24Z",
+      "last_seen_at": "2026-08-29T13:23:24Z",
+      "max_momentum": 151,
+      "url": "https://mixch.tv/u/18949875/live"
+    }
+  },
   "notifications": {
     "10914555": {
       "broadcaster_name": "さちこアプデマイスタ",
