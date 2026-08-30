@@ -2,7 +2,15 @@
   "metadata": {
     "last_heartbeat_at": "2026-08-26T09:16:46Z"
   },
-  "night_candidates": {},
+  "night_candidates": {
+    "18803762": {
+      "broadcaster_name": "こんちゃん日1.5衣女",
+      "first_seen_at": "2026-08-30T14:09:01Z",
+      "last_seen_at": "2026-08-30T14:09:01Z",
+      "max_momentum": 173,
+      "url": "https://mixch.tv/u/18803762/live"
+    }
+  },
   "notifications": {
     "10914555": {
       "broadcaster_name": "さちこアプデマイスタ",
