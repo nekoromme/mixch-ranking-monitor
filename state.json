@@ -2,22 +2,7 @@
   "metadata": {
     "last_heartbeat_at": "2026-08-26T09:16:46Z"
   },
-  "night_candidates": {
-    "15497902": {
-      "broadcaster_name": "りり",
-      "first_seen_at": "2026-08-30T16:02:52Z",
-      "last_seen_at": "2026-08-30T16:02:52Z",
-      "max_momentum": 157,
-      "url": "https://mixch.tv/u/15497902/live"
-    },
-    "18803762": {
-      "broadcaster_name": "こんちゃん日1.5衣女",
-      "first_seen_at": "2026-08-30T14:09:01Z",
-      "last_seen_at": "2026-08-30T14:09:01Z",
-      "max_momentum": 173,
-      "url": "https://mixch.tv/u/18803762/live"
-    }
-  },
+  "night_candidates": {},
   "notifications": {
     "10914555": {
       "broadcaster_name": "さちこアプデマイスタ",
@@ -68,6 +53,12 @@
       "last_notified_at": "2026-08-21T22:03:42Z",
       "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/15492927/live"
+    },
+    "15497902": {
+      "broadcaster_name": "りり",
+      "last_notified_at": "2026-08-30T22:04:49Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/15497902/live"
     },
     "16000840": {
       "broadcaster_name": "ゆのﾞﾙｱﾜ最終日❤️",
@@ -414,6 +405,12 @@
       "last_notified_at": "2026-08-28T22:02:37Z",
       "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/18803632/live"
+    },
+    "18803762": {
+      "broadcaster_name": "こんちゃん日1.5衣女",
+      "last_notified_at": "2026-08-30T22:04:49Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18803762/live"
     },
     "18816875": {
       "broadcaster_name": "りのJCミスコン2026",
