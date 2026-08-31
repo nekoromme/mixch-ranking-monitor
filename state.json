@@ -2,7 +2,15 @@
   "metadata": {
     "last_heartbeat_at": "2026-08-26T09:16:46Z"
   },
-  "night_candidates": {},
+  "night_candidates": {
+    "18969138": {
+      "broadcaster_name": "伊集院",
+      "first_seen_at": "2026-08-31T13:11:49Z",
+      "last_seen_at": "2026-08-31T13:11:49Z",
+      "max_momentum": 157,
+      "url": "https://mixch.tv/u/18969138/live"
+    }
+  },
   "notifications": {
     "10914555": {
       "broadcaster_name": "さちこアプデマイスタ",
