@@ -1041,6 +1041,11 @@
       "last_notified_at": "2026-08-31T22:00:29Z",
       "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/18976446/live"
+    },
+    "18977291": {
+      "broadcaster_name": "ひまち",
+      "last_notified_at": "2026-09-01T10:25:47Z",
+      "url": "https://mixch.tv/u/18977291/live"
     }
   },
   "version": 1
