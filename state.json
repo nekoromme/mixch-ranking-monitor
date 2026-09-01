@@ -2,50 +2,7 @@
   "metadata": {
     "last_heartbeat_at": "2026-08-26T09:16:46Z"
   },
-  "night_candidates": {
-    "16903258": {
-      "broadcaster_name": "サクラバシ919 公式",
-      "first_seen_at": "2026-09-01T14:09:12Z",
-      "last_seen_at": "2026-09-01T15:32:56Z",
-      "max_momentum": 332,
-      "url": "https://mixch.tv/u/16903258/live"
-    },
-    "17030639": {
-      "broadcaster_name": "yuuki",
-      "first_seen_at": "2026-09-01T14:04:00Z",
-      "last_seen_at": "2026-09-01T14:04:00Z",
-      "max_momentum": 154,
-      "url": "https://mixch.tv/u/17030639/live"
-    },
-    "18296626": {
-      "broadcaster_name": "女王まりあ#札ｺﾚZipper",
-      "first_seen_at": "2026-09-01T15:32:56Z",
-      "last_seen_at": "2026-09-01T15:32:56Z",
-      "max_momentum": 272,
-      "url": "https://mixch.tv/u/18296626/live"
-    },
-    "18328200": {
-      "broadcaster_name": "蜜蜂さっつアバーイ",
-      "first_seen_at": "2026-09-01T14:35:11Z",
-      "last_seen_at": "2026-09-01T14:35:11Z",
-      "max_momentum": 260,
-      "url": "https://mixch.tv/u/18328200/live"
-    },
-    "18883555": {
-      "broadcaster_name": "いぶ #バイク女",
-      "first_seen_at": "2026-09-01T15:43:15Z",
-      "last_seen_at": "2026-09-01T15:43:15Z",
-      "max_momentum": 153,
-      "url": "https://mixch.tv/u/18883555/live"
-    },
-    "18909862": {
-      "broadcaster_name": "ま/2パトン#麗し美人",
-      "first_seen_at": "2026-09-01T14:09:12Z",
-      "last_seen_at": "2026-09-01T14:09:12Z",
-      "max_momentum": 283,
-      "url": "https://mixch.tv/u/18909862/live"
-    }
-  },
+  "night_candidates": {},
   "notifications": {
     "10914555": {
       "broadcaster_name": "さちこアプデマイスタ",
@@ -129,7 +86,7 @@
     },
     "16903258": {
       "broadcaster_name": "サクラバシ919 公式",
-      "last_notified_at": "2026-08-28T22:02:37Z",
+      "last_notified_at": "2026-09-01T22:04:16Z",
       "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/16903258/live"
     },
@@ -138,6 +95,12 @@
       "last_notified_at": "2026-08-23T22:05:05Z",
       "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/16997898/live"
+    },
+    "17030639": {
+      "broadcaster_name": "yuuki",
+      "last_notified_at": "2026-09-01T22:04:16Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/17030639/live"
     },
     "17114808": {
       "broadcaster_name": "スカイピョン()札コレ",
@@ -273,8 +236,8 @@
       "url": "https://mixch.tv/u/18177080/live"
     },
     "18296626": {
-      "broadcaster_name": "女王まりあ#初日",
-      "last_notified_at": "2026-08-31T22:00:29Z",
+      "broadcaster_name": "女王まりあ#札ｺﾚZipper",
+      "last_notified_at": "2026-09-01T22:04:16Z",
       "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/18296626/live"
     },
@@ -288,6 +251,12 @@
       "last_notified_at": "2026-08-19T22:00:12Z",
       "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/18319157/live"
+    },
+    "18328200": {
+      "broadcaster_name": "蜜蜂さっつアバーイ",
+      "last_notified_at": "2026-09-01T22:04:16Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18328200/live"
     },
     "18361692": {
       "broadcaster_name": "わたちゃ“裏MG",
@@ -557,6 +526,12 @@
       "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/18882904/live"
     },
+    "18883555": {
+      "broadcaster_name": "いぶ #バイク女",
+      "last_notified_at": "2026-09-01T22:04:16Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18883555/live"
+    },
     "18883831": {
       "broadcaster_name": "日1.5倍❤️衣#浴衣女",
       "last_notified_at": "2026-08-30T09:19:13Z",
@@ -617,6 +592,12 @@
       "broadcaster_name": "いくと#DKミスターコン",
       "last_notified_at": "2026-08-21T12:33:58Z",
       "url": "https://mixch.tv/u/18905689/live"
+    },
+    "18909862": {
+      "broadcaster_name": "ま/2パトン#麗し美人",
+      "last_notified_at": "2026-09-01T22:04:16Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18909862/live"
     },
     "18912322": {
       "broadcaster_name": "おうしろう⚔ #DKミスターコン",
