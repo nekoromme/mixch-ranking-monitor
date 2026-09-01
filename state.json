@@ -2,7 +2,15 @@
   "metadata": {
     "last_heartbeat_at": "2026-08-26T09:16:46Z"
   },
-  "night_candidates": {},
+  "night_candidates": {
+    "17030639": {
+      "broadcaster_name": "yuuki",
+      "first_seen_at": "2026-09-01T14:04:00Z",
+      "last_seen_at": "2026-09-01T14:04:00Z",
+      "max_momentum": 154,
+      "url": "https://mixch.tv/u/17030639/live"
+    }
+  },
   "notifications": {
     "10914555": {
       "broadcaster_name": "さちこアプデマイスタ",
