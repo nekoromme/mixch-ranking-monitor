@@ -2,7 +2,15 @@
   "metadata": {
     "last_heartbeat_at": "2026-09-02T09:17:23Z"
   },
-  "night_candidates": {},
+  "night_candidates": {
+    "18941044": {
+      "broadcaster_name": "秋桜Zipper掲載AD",
+      "first_seen_at": "2026-09-02T13:26:33Z",
+      "last_seen_at": "2026-09-02T13:26:33Z",
+      "max_momentum": 152,
+      "url": "https://mixch.tv/u/18941044/live"
+    }
+  },
   "notifications": {
     "10914555": {
       "broadcaster_name": "さちこアプデマイスタ",
