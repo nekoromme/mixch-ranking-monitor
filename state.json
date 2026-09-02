@@ -2,22 +2,7 @@
   "metadata": {
     "last_heartbeat_at": "2026-09-02T09:17:23Z"
   },
-  "night_candidates": {
-    "18941044": {
-      "broadcaster_name": "秋桜Zipper掲載AD",
-      "first_seen_at": "2026-09-02T13:26:33Z",
-      "last_seen_at": "2026-09-02T13:26:33Z",
-      "max_momentum": 152,
-      "url": "https://mixch.tv/u/18941044/live"
-    },
-    "18949179": {
-      "broadcaster_name": "三澄ちひエアワ5",
-      "first_seen_at": "2026-09-02T15:05:15Z",
-      "last_seen_at": "2026-09-02T15:05:15Z",
-      "max_momentum": 179,
-      "url": "https://mixch.tv/u/18949179/live"
-    }
-  },
+  "night_candidates": {},
   "notifications": {
     "10914555": {
       "broadcaster_name": "さちこアプデマイスタ",
@@ -734,6 +719,12 @@
       "last_notified_at": "2026-08-13T09:52:48Z",
       "url": "https://mixch.tv/u/18939783/live"
     },
+    "18941044": {
+      "broadcaster_name": "秋桜Zipper掲載AD",
+      "last_notified_at": "2026-09-02T22:00:46Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18941044/live"
+    },
     "18941703": {
       "broadcaster_name": "yui#K-1ラウンドガールAD",
       "last_notified_at": "2026-08-12T09:33:23Z",
@@ -802,6 +793,12 @@
       "broadcaster_name": "Sahoほさうといさ",
       "last_notified_at": "2026-08-24T03:40:57Z",
       "url": "https://mixch.tv/u/18949092/live"
+    },
+    "18949179": {
+      "broadcaster_name": "三澄ちひエアワ5",
+      "last_notified_at": "2026-09-02T22:00:46Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18949179/live"
     },
     "18949345": {
       "broadcaster_name": "ゆいたん️♯JKミスコン",
