@@ -58,11 +58,11 @@
       "name": "高額抽選監視（RICOH）",
       "repository": "nekoromme/high-value-lottery-monitor",
       "workflow": "monitor.yml",
-      "max_success_age_minutes": 150,
+      "max_success_age_minutes": 540,
       "max_run_minutes": 30,
       "purpose": "RICOHなど高額商品の公式抽選ページを定期確認する監視",
       "outage_impact": "新しい抽選フォームの発見とカレンダー・Discord通知が遅れる可能性があります。",
-      "automatic_recovery": "次回の定期実行で自動的にもう一度確認します。"
+      "automatic_recovery": "RICOH側の軽量な復旧役が毎時確認し、最後の成功から7時間30分を超えた場合だけ本体を再起動します。"
     }
   ]
 }
