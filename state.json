@@ -2,22 +2,7 @@
   "metadata": {
     "last_heartbeat_at": "2026-09-02T09:17:23Z"
   },
-  "night_candidates": {
-    "16903258": {
-      "broadcaster_name": "サクラバシ919 公式",
-      "first_seen_at": "2026-09-03T14:07:30Z",
-      "last_seen_at": "2026-09-03T15:09:53Z",
-      "max_momentum": 245,
-      "url": "https://mixch.tv/u/16903258/live"
-    },
-    "17959898": {
-      "broadcaster_name": "あいり❤️9/7誕生日",
-      "first_seen_at": "2026-09-03T15:20:23Z",
-      "last_seen_at": "2026-09-03T15:20:23Z",
-      "max_momentum": 153,
-      "url": "https://mixch.tv/u/17959898/live"
-    }
-  },
+  "night_candidates": {},
   "notifications": {
     "10914555": {
       "broadcaster_name": "さちこアプデマイスタ",
@@ -106,7 +91,7 @@
     },
     "16903258": {
       "broadcaster_name": "サクラバシ919 公式",
-      "last_notified_at": "2026-09-01T22:04:16Z",
+      "last_notified_at": "2026-09-03T22:02:10Z",
       "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/16903258/live"
     },
@@ -223,8 +208,9 @@
       "url": "https://mixch.tv/u/17950307/live"
     },
     "17959898": {
-      "broadcaster_name": "あいり❤️K-1のみ確定❤️",
-      "last_notified_at": "2026-08-14T12:17:56Z",
+      "broadcaster_name": "あいり❤️9/7誕生日",
+      "last_notified_at": "2026-09-03T22:02:10Z",
+      "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/17959898/live"
     },
     "17966308": {
