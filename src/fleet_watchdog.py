@@ -43,6 +43,9 @@ class Target:
     workflow: str
     max_success_age_minutes: int
     max_run_minutes: int
+    # 未指定なら従来どおり「遅延判定の2倍」で赤通知する。実行間隔が長い監視は、
+    # GitHubの通常遅延と本当に対応が必要な停止を分けるため個別指定できる。
+    critical_success_age_minutes: int | None = None
     purpose: str = "監視対象の定期処理"
     outage_impact: str = "この監視対象の通知や更新が遅れる可能性があります。"
     automatic_recovery: str = "次回の定期実行で自動的に再確認します。"
@@ -260,6 +263,11 @@ def load_targets(path: Path) -> list[Target]:
                 workflow=str(item["workflow"]).strip(),
                 max_success_age_minutes=int(item["max_success_age_minutes"]),
                 max_run_minutes=int(item["max_run_minutes"]),
+                critical_success_age_minutes=(
+                    int(item["critical_success_age_minutes"])
+                    if item.get("critical_success_age_minutes") is not None
+                    else None
+                ),
                 purpose=str(item.get("purpose") or "監視対象の定期処理").strip(),
                 outage_impact=str(
                     item.get("outage_impact")
@@ -287,6 +295,13 @@ def load_targets(path: Path) -> list[Target]:
             raise WatchdogError(f"targets の {index} 件目に空欄または不正なリポジトリ名があります")
         if target.max_success_age_minutes <= 0 or target.max_run_minutes <= 0:
             raise WatchdogError(f"targets の {index} 件目の時間は1以上にしてください")
+        if (
+            target.critical_success_age_minutes is not None
+            and target.critical_success_age_minutes <= target.max_success_age_minutes
+        ):
+            raise WatchdogError(
+                f"targets の {index} 件目の赤通知時間は遅延判定時間より長くしてください"
+            )
         if target.key in keys:
             raise WatchdogError(f"監視対象が重複しています: {target.key}")
         keys.add(target.key)
@@ -562,13 +577,17 @@ def explain_health(result: Health) -> AlertExplanation:
         automatic = "全体監視番が15分後にもう一度確認します。"
     elif result.code == "success_stale":
         age = result.last_success_age_minutes
+        critical_age = (
+            result.target.critical_success_age_minutes
+            or result.target.max_success_age_minutes * 2
+        )
         headline = f"{name}が予定どおり動いていません"
         what = (
             f"最後の正常終了は {format_jst(result.last_success_at)}。"
             f"{age if age is not None else '不明'}分動いておらず、"
             f"通常の待ち時間{result.target.max_success_age_minutes}分を超えました。"
         )
-        if age is not None and age > result.target.max_success_age_minutes * 2:
+        if age is not None and age > critical_age:
             severity, label, icon, color, action = (
                 "critical",
                 "対応が必要",

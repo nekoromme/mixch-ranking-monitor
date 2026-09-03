@@ -314,6 +314,26 @@ class AlertMessageTests(unittest.TestCase):
         self.assertIn("何もしなくてOK", explanation.user_action)
         self.assertIn("2026/08/24", explanation.what_happened)
 
+    def test_target_specific_critical_age_is_used(self) -> None:
+        target = Target(
+            name="低頻度監視",
+            repository="example/monitor",
+            workflow="monitor.yml",
+            max_success_age_minutes=540,
+            max_run_minutes=30,
+            critical_success_age_minutes=720,
+        )
+        result = Health(
+            target=target,
+            healthy=False,
+            code="success_stale",
+            detail="停止",
+            checked_at=NOW.isoformat(),
+            last_success_at=stamp(721),
+            last_success_age_minutes=721,
+        )
+        self.assertEqual(explain_health(result).severity, "critical")
+
     def test_repeated_failure_is_critical(self) -> None:
         explanation = explain_health(self.critical_health())
         self.assertEqual(explanation.severity, "critical")

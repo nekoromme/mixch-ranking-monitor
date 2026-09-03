@@ -59,6 +59,7 @@
       "repository": "nekoromme/high-value-lottery-monitor",
       "workflow": "monitor.yml",
       "max_success_age_minutes": 540,
+      "critical_success_age_minutes": 720,
       "max_run_minutes": 30,
       "purpose": "RICOHなど高額商品の公式抽選ページを定期確認する監視",
       "outage_impact": "新しい抽選フォームの発見とカレンダー・Discord通知が遅れる可能性があります。",
