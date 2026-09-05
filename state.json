@@ -2,7 +2,15 @@
   "metadata": {
     "last_heartbeat_at": "2026-09-02T09:17:23Z"
   },
-  "night_candidates": {},
+  "night_candidates": {
+    "18917809": {
+      "broadcaster_name": "なぴLARMEイベント",
+      "first_seen_at": "2026-09-05T13:34:43Z",
+      "last_seen_at": "2026-09-05T13:34:43Z",
+      "max_momentum": 196,
+      "url": "https://mixch.tv/u/18917809/live"
+    }
+  },
   "notifications": {
     "10914555": {
       "broadcaster_name": "さちこアプデマイスタ",
