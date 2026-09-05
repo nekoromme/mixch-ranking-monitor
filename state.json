@@ -2,43 +2,7 @@
   "metadata": {
     "last_heartbeat_at": "2026-09-02T09:17:23Z"
   },
-  "night_candidates": {
-    "18579071": {
-      "broadcaster_name": "月灯ほたる#a-eye",
-      "first_seen_at": "2026-09-05T16:20:51Z",
-      "last_seen_at": "2026-09-05T16:20:51Z",
-      "max_momentum": 169,
-      "url": "https://mixch.tv/u/18579071/live"
-    },
-    "18863033": {
-      "broadcaster_name": "みぃyell投票#ネクジェネ大阪",
-      "first_seen_at": "2026-09-05T16:00:15Z",
-      "last_seen_at": "2026-09-05T16:00:15Z",
-      "max_momentum": 192,
-      "url": "https://mixch.tv/u/18863033/live"
-    },
-    "18917809": {
-      "broadcaster_name": "なぴLARMEイベント",
-      "first_seen_at": "2026-09-05T13:34:43Z",
-      "last_seen_at": "2026-09-05T13:34:43Z",
-      "max_momentum": 196,
-      "url": "https://mixch.tv/u/18917809/live"
-    },
-    "18932495": {
-      "broadcaster_name": "もね長ｲﾍ",
-      "first_seen_at": "2026-09-05T17:02:06Z",
-      "last_seen_at": "2026-09-05T17:02:06Z",
-      "max_momentum": 220,
-      "url": "https://mixch.tv/u/18932495/live"
-    },
-    "18964700": {
-      "broadcaster_name": "赤ちゃん",
-      "first_seen_at": "2026-09-05T14:01:12Z",
-      "last_seen_at": "2026-09-05T14:47:47Z",
-      "max_momentum": 512,
-      "url": "https://mixch.tv/u/18964700/live"
-    }
-  },
+  "night_candidates": {},
   "notifications": {
     "10914555": {
       "broadcaster_name": "さちこアプデマイスタ",
@@ -385,6 +349,12 @@
       "last_notified_at": "2026-08-25T10:18:06Z",
       "url": "https://mixch.tv/u/18574994/live"
     },
+    "18579071": {
+      "broadcaster_name": "月灯ほたる#a-eye",
+      "last_notified_at": "2026-09-05T22:02:44Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18579071/live"
+    },
     "18580144": {
       "broadcaster_name": "登坂美羽",
       "last_notified_at": "2026-08-13T07:11:58Z",
@@ -579,8 +549,9 @@
       "url": "https://mixch.tv/u/18861691/live"
     },
     "18863033": {
-      "broadcaster_name": "みクジェネ大阪",
-      "last_notified_at": "2026-08-25T09:57:23Z",
+      "broadcaster_name": "みぃyell投票#ネクジェネ大阪",
+      "last_notified_at": "2026-09-05T22:02:44Z",
+      "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/18863033/live"
     },
     "18865016": {
@@ -687,6 +658,12 @@
       "last_notified_at": "2026-09-03T11:35:50Z",
       "url": "https://mixch.tv/u/18917136/live"
     },
+    "18917809": {
+      "broadcaster_name": "なぴLARMEイベント",
+      "last_notified_at": "2026-09-05T22:02:44Z",
+      "reason": "night_digest_processed",
+      "url": "https://mixch.tv/u/18917809/live"
+    },
     "18918492": {
       "broadcaster_name": "あのん♠️#JKミスコン",
       "last_notified_at": "2026-08-28T12:56:11Z",
@@ -766,8 +743,8 @@
       "url": "https://mixch.tv/u/18931827/live"
     },
     "18932495": {
-      "broadcaster_name": "本日1.4倍もね",
-      "last_notified_at": "2026-08-26T22:01:20Z",
+      "broadcaster_name": "もね長ｲﾍ",
+      "last_notified_at": "2026-09-05T22:02:44Z",
       "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/18932495/live"
     },
@@ -1039,7 +1016,7 @@
     },
     "18964700": {
       "broadcaster_name": "赤ちゃん",
-      "last_notified_at": "2026-08-24T22:03:30Z",
+      "last_notified_at": "2026-09-05T22:02:44Z",
       "reason": "night_digest_processed",
       "url": "https://mixch.tv/u/18964700/live"
     },
