@@ -2,7 +2,15 @@
   "metadata": {
     "last_heartbeat_at": "2026-09-02T09:17:23Z"
   },
-  "night_candidates": {},
+  "night_candidates": {
+    "17376445": {
+      "broadcaster_name": "決勝初日せれな#JKミスコン投票",
+      "first_seen_at": "2026-09-07T13:03:04Z",
+      "last_seen_at": "2026-09-07T13:03:04Z",
+      "max_momentum": 265,
+      "url": "https://mixch.tv/u/17376445/live"
+    }
+  },
   "notifications": {
     "10914555": {
       "broadcaster_name": "さちこアプデマイスタ",
