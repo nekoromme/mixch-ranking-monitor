@@ -401,3 +401,17 @@ class ConfigTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class IntentionalPauseTests(unittest.TestCase):
+    def test_pause_skips_health_queries_and_alerts(self):
+        import base64
+        from dataclasses import replace
+        from unittest.mock import Mock
+        client=Mock()
+        client.request.return_value={'content':base64.b64encode(b'{"ranking_enabled":false}').decode()}
+        result=evaluate_target(client,replace(TARGET,control_setting='ranking_enabled'),NOW)
+        self.assertTrue(result.healthy)
+        self.assertEqual(result.code,'intentionally_paused')
+        client.workflow.assert_not_called()
+        client.workflow_runs.assert_not_called()

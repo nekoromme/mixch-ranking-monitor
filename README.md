@@ -1,3 +1,16 @@
+# ランキング監視は統合先へ移行しました
+
+ランキング監視のコード・通知済み履歴・定期起動は [mixch-archive-monitor-public](https://github.com/nekoromme/mixch-archive-monitor-public/tree/main/ranking) へ移しました。
+
+操作は [統合管理画面](https://mixch-archive-admin.purplepearl-v.workers.dev/) の「監視設定」から行います。アーカイブとランキングを別々にオン・オフできます。
+
+このリポジトリは、トレカ・RICOH等も確認する全監視ツールの停止監視を引き続き実行します。そのためリポジトリ全体を無効化・削除しないでください。
+旧ランキング本体・5分リレー・ランキング専用の復旧処理は二重実行を防ぐため起動しません。旧コードと履歴ブランチは確認用に残しています。
+
+---
+
+以下は移行前の説明です。現在の使い方は統合先を参照してください。
+
 # MixChannel 勢い監視
 
 [ライブランキングZのMixChannel勢い順](https://live-ranking.com/v/mixch)を24時間・5分おきに確認します。主サイトを取得できない、またはランキングとして正常に解析できない場合は、同系列の[MixChannelリアルタイムランキング](https://ikioi-ranking.com/v/mixch)へ自動で切り替えます。

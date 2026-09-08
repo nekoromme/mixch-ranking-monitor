@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import base64
 import os
 import sys
 import time
@@ -43,6 +44,7 @@ class Target:
     workflow: str
     max_success_age_minutes: int
     max_run_minutes: int
+    control_setting: str | None = None
     # 未指定なら従来どおり「遅延判定の2倍」で赤通知する。実行間隔が長い監視は、
     # GitHubの通常遅延と本当に対応が必要な停止を分けるため個別指定できる。
     critical_success_age_minutes: int | None = None
@@ -263,6 +265,7 @@ def load_targets(path: Path) -> list[Target]:
                 workflow=str(item["workflow"]).strip(),
                 max_success_age_minutes=int(item["max_success_age_minutes"]),
                 max_run_minutes=int(item["max_run_minutes"]),
+                control_setting=item.get("control_setting"),
                 critical_success_age_minutes=(
                     int(item["critical_success_age_minutes"])
                     if item.get("critical_success_age_minutes") is not None
@@ -326,6 +329,22 @@ def evaluate_target(client: GitHubClient, target: Target, now: datetime) -> Heal
 
     checked_at = now.astimezone(UTC).isoformat()
     try:
+        if target.control_setting:
+            # 管理画面で利用者が停止したものを故障扱いしません。
+            # 設定取得に失敗した時は停止と決めつけず、下の通信エラー判定へ進めます。
+            file = client.request("GET", f"/repos/{target.repository}/contents/monitor_settings.json?ref=main")
+            settings = json.loads(base64.b64decode(file["content"]))
+            enabled = settings.get(target.control_setting)
+            if type(enabled) is not bool:
+                raise WatchdogError("監視のオンオフ設定が不正です")
+            if enabled and target.control_setting == 'ranking_enabled' and settings.get('ranking_changed_at'):
+                changed = datetime.fromisoformat(settings['ranking_changed_at'].replace('Z', '+00:00'))
+                if 0 <= (now - changed).total_seconds() < 12 * 60:
+                    return Health(target=target, healthy=True, code="resume_grace",
+                                  detail="再開後の最初の監視を待っています。", checked_at=checked_at)
+            if not enabled:
+                return Health(target=target, healthy=True, code="intentionally_paused",
+                              detail="管理画面で停止中のため、異常通知を抑止します。", checked_at=checked_at)
         workflow = client.workflow(target)
         runs = sorted(client.workflow_runs(target), key=_run_time, reverse=True)
     except Exception as exc:  # 1対象の通信エラーで、残りの監視を捨てない。
@@ -958,3 +977,4 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
