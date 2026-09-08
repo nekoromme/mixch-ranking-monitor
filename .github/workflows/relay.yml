@@ -1,4 +1,4 @@
-name: MixChannel 5分リレー（Cloudflare定期起動へ移行済み）
+name: MixChannel 5分リレー（統合先へ移行済み）
 on:
   workflow_dispatch:
 jobs:
@@ -6,4 +6,4 @@ jobs:
     if: ${{ false }}
     runs-on: ubuntu-latest
     steps:
-      - run: echo 'Moved to Cloudflare scheduler'
+      - run: echo 'Moved to the integrated ranking scheduler'
