@@ -9,7 +9,8 @@
       "purpose": "MixChannelの勢いランキングを約5分おきに確認する本体",
       "outage_impact": "勢いが高い配信の発見とDiscord通知が遅れる可能性があります。",
       "automatic_recovery": "既存の停止監視が本体の再起動を試みます。",
-      "control_setting": "ranking_enabled"
+      "control_setting": "ranking_enabled",
+      "critical_success_age_minutes": 120
     },
     {
       "name": "MixChannelの自動復旧チェック",
