@@ -4,8 +4,9 @@ import json
 import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
+from dataclasses import replace
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from src.fleet_watchdog import (
     Health,
@@ -15,6 +16,8 @@ from src.fleet_watchdog import (
     action_requirement_marker,
     alert_version_marker,
     apply_redundancy_rules,
+    apply_incidents,
+    confirm_actionable_results,
     build_discord_payload,
     evaluate_target,
     explain_health,
@@ -214,11 +217,14 @@ class IncidentPlanningTests(unittest.TestCase):
             checked_at=NOW.isoformat(),
         )
 
-    def test_new_failure_opens_once(self) -> None:
-        events = plan_incidents([self.health(False)], {})
-        self.assertEqual([event.kind for event in events], ["opened"])
+    def test_single_failure_is_report_only(self) -> None:
+        self.assertEqual(plan_incidents([self.health(False)], {}), [])
 
-    def test_continuing_failure_does_not_repeat(self) -> None:
+    def test_confirmed_failure_opens_once(self) -> None:
+        critical = replace(self.health(False), consecutive_failures=2)
+        self.assertEqual([e.kind for e in plan_incidents([critical], {})], ["opened"])
+
+    def test_old_warning_incident_is_retired(self) -> None:
         open_incidents = {
             TARGET.key: {
                 "number": 12,
@@ -226,7 +232,7 @@ class IncidentPlanningTests(unittest.TestCase):
             }
         }
         events = plan_incidents([self.health(False)], open_incidents)
-        self.assertEqual(events, [])
+        self.assertEqual([e.kind for e in events], ["retired"])
 
     def test_warning_escalation_to_action_required_updates_once(self) -> None:
         critical = Health(
@@ -267,7 +273,7 @@ class IncidentPlanningTests(unittest.TestCase):
 
     def test_old_alert_format_is_updated_once(self) -> None:
         open_incidents = {TARGET.key: {"number": 12, "body": "古い通知"}}
-        events = plan_incidents([self.health(False)], open_incidents)
+        events = plan_incidents([replace(self.health(False), consecutive_failures=2)], open_incidents)
         self.assertEqual(events[0].kind, "updated")
         self.assertEqual(events[0].issue_number, 12)
 
@@ -415,3 +421,79 @@ class IntentionalPauseTests(unittest.TestCase):
         self.assertEqual(result.code,'intentionally_paused')
         client.workflow.assert_not_called()
         client.workflow_runs.assert_not_called()
+
+
+class FalseAlertRegressionTests(unittest.TestCase):
+    def test_live_backup_incident_59_is_not_recreated_while_main_is_running(self):
+        targets = load_targets(Path("fleet_targets.json"))
+        main, backup = targets[:2]
+        results = apply_redundancy_rules([
+            Health(main, True, "healthy", "最後の成功から5分", NOW.isoformat(),
+                   last_success_age_minutes=5),
+            Health(backup, False, "success_stale", "167分経過", NOW.isoformat(),
+                   last_success_age_minutes=167),
+        ])
+        self.assertEqual(plan_incidents(results, {}), [])
+        events = plan_incidents(results, {backup.key: {"number":59,
+            "body": action_requirement_marker(False)}})
+        self.assertEqual([e.kind for e in events], ["retired"])
+        client = Mock()
+        apply_incidents(client, "example/home", events)
+        client.close_issue.assert_called_once_with("example/home", 59)
+        client.create_issue.assert_not_called()
+        client.comment_issue.assert_not_called()
+        self.assertEqual(build_discord_payload(events)["embeds"], [])
+
+    def test_live_ranking_delay_103_minutes_allows_existing_recovery_to_finish(self):
+        main = load_targets(Path("fleet_targets.json"))[0]
+        delayed = Health(main, False, "success_stale", "103分経過", NOW.isoformat(),
+                         last_success_age_minutes=103)
+        self.assertFalse(explain_health(delayed).requires_user_action)
+        self.assertEqual(plan_incidents([delayed], {}), [])
+        outage = replace(delayed, last_success_age_minutes=121)
+        self.assertTrue(explain_health(outage).requires_user_action)
+        self.assertEqual([e.kind for e in plan_incidents([outage], {})], ["opened"])
+
+    def test_archive_warning_does_not_open_github_notification_issue(self):
+        archive = load_targets(Path("fleet_targets.json"))[3]
+        warning = Health(archive, False, "success_stale", "828分経過", NOW.isoformat(),
+                         last_success_age_minutes=828)
+        self.assertEqual(plan_incidents([warning], {}), [])
+
+    @patch("src.fleet_watchdog.time.sleep")
+    @patch("src.fleet_watchdog.evaluate_target")
+    def test_candidate_that_recovers_on_recheck_does_not_notify(self, evaluate, sleep):
+        outage = Health(TARGET, False, "success_stale", "停止疑い", NOW.isoformat(),
+                        last_success_age_minutes=100)
+        evaluate.return_value = replace(outage, healthy=True, code="healthy",
+                                       last_success_age_minutes=1)
+        results = confirm_actionable_results(Mock(), [outage])
+        sleep.assert_called_once_with(15)
+        evaluate.assert_called_once()
+        self.assertEqual(plan_incidents(results, {}), [])
+
+    @patch("src.fleet_watchdog.time.sleep")
+    @patch("src.fleet_watchdog.evaluate_target")
+    def test_persistent_outage_still_alerts_once(self, evaluate, sleep):
+        outage = Health(TARGET, False, "success_stale", "停止疑い", NOW.isoformat(),
+                        last_success_age_minutes=100)
+        evaluate.return_value = outage
+        results = confirm_actionable_results(Mock(), [outage])
+        self.assertEqual(len(build_discord_payload(plan_incidents(results, {}))["embeds"]), 1)
+        existing = {TARGET.key: {"number":12, "body":issue_body(outage)}}
+        self.assertEqual(plan_incidents(results, existing), [])
+
+    def test_starting_recovery_does_not_close_and_reopen_incident(self):
+        pending = Health(TARGET, True, "recovery_in_progress", "実行中", NOW.isoformat())
+        existing = {TARGET.key: {"number":12, "body":action_requirement_marker(True)}}
+        self.assertEqual(plan_incidents([pending], existing), [])
+        success = replace(pending, code="healthy", last_success_age_minutes=1)
+        self.assertEqual([e.kind for e in plan_incidents([success], existing)], ["recovered"])
+
+    @patch("src.fleet_watchdog.time.sleep")
+    def test_healthy_and_warning_checks_need_no_extra_requests(self, sleep):
+        warning = Health(TARGET, False, "api_error", "状態不明", NOW.isoformat())
+        client = Mock()
+        self.assertEqual(confirm_actionable_results(client, [warning]), [warning])
+        sleep.assert_not_called()
+        client.workflow.assert_not_called()

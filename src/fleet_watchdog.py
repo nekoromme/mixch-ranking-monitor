@@ -96,7 +96,7 @@ class Health:
 class IncidentEvent:
     """Issue と、対応が必要ならDiscordにも反映する新規異常または復旧。"""
 
-    kind: str  # "opened"、"updated" または "recovered"
+    kind: str  # "opened"、"updated"、"recovered" または "retired"
     health: Health
     issue_number: int | None = None
 
@@ -526,6 +526,28 @@ def apply_redundancy_rules(results: Iterable[Health]) -> list[Health]:
     return adjusted
 
 
+def confirm_actionable_results(
+    client: GitHubClient,
+    results: list[Health],
+    *,
+    delay_seconds: float = 15,
+) -> list[Health]:
+    """赤通知候補を短い間隔で再取得し、復旧済み・一時的な取得結果を除く。"""
+
+    candidates = {result.target.key for result in results
+                  if explain_health(result).requires_user_action}
+    if not candidates:
+        return results
+    time.sleep(delay_seconds)
+    now = datetime.now(UTC)
+    confirmed = [evaluate_target(client, result.target, now)
+                 if result.target.key in candidates else result for result in results]
+    for result in confirmed:
+        if result.target.key in candidates:
+            print(f"FLEET_CONFIRM target={result.target.key} code={result.code}")
+    return apply_redundancy_rules(confirmed)
+
+
 def issue_marker(target: Target) -> str:
     digest = hashlib.sha256(target.key.encode("utf-8")).hexdigest()[:20]
     return f"<!-- fleet-watchdog:{digest} -->"
@@ -603,7 +625,7 @@ def explain_health(result: Health) -> AlertExplanation:
         headline = f"{name}が予定どおり動いていません"
         what = (
             f"最後の正常終了は {format_jst(result.last_success_at)}。"
-            f"{age if age is not None else '不明'}分動いておらず、"
+            f"正常終了を{age if age is not None else '不明'}分確認できず、"
             f"通常の待ち時間{result.target.max_success_age_minutes}分を超えました。"
         )
         if age is not None and age > critical_age:
@@ -714,22 +736,29 @@ def plan_incidents(results: Iterable[Health], open_incidents: dict[str, dict[str
     events: list[IncidentEvent] = []
     for result in results:
         existing = open_incidents.get(result.target.key)
+        actionable = explain_health(result).requires_user_action
+        # GitHub Issueの作成・コメントもメールやアプリ通知を発生させる。
+        # 様子見はレポートだけに残し、対応が必要になってから初めてIssue化する。
         if not result.healthy and existing is None:
-            events.append(IncidentEvent("opened", result))
-        elif (
-            not result.healthy
-            and existing is not None
-            and (
-                alert_version_marker() not in str(existing.get("body") or "")
-                or action_requirement_marker(
-                    explain_health(result).requires_user_action
-                )
-                not in str(existing.get("body") or "")
-            )
-        ):
-            events.append(IncidentEvent("updated", result, int(existing["number"])))
-        elif result.healthy and existing is not None:
-            events.append(IncidentEvent("recovered", result, int(existing["number"])))
+            if actionable:
+                events.append(IncidentEvent("opened", result))
+        elif existing is not None:
+            body = str(existing.get("body") or "")
+            number = int(existing["number"])
+            if result.healthy:
+                # 起動予約・実行中は「成功」ではない。ここで閉じると、次の確認で
+                # 同じ停止を新規扱いして通知し直すため、実際の成功まで待つ。
+                if result.code not in {"recovery_in_progress", "first_run_in_progress", "resume_grace"}:
+                    events.append(IncidentEvent("recovered", result, number))
+            elif actionable:
+                if (alert_version_marker() not in body
+                        or action_requirement_marker(True) not in body):
+                    events.append(IncidentEvent("updated", result, number))
+            elif (action_requirement_marker(True) not in body
+                    or result.user_action_blocked_by):
+                # 旧版が作った様子見Issue、または本体正常の予備系Issueを整理する。
+                # 通信不明・復旧途中だけで、既存の本当の障害を解決扱いにはしない。
+                events.append(IncidentEvent("retired", result, number))
     return events
 
 
@@ -860,19 +889,8 @@ def apply_incidents(
             print(f"INCIDENT_UPDATED target={result.target.key} code={result.code}")
         else:
             assert event.issue_number is not None
-            explanation = explain_health(result)
-            client.comment_issue(
-                home_repository,
-                event.issue_number,
-                (
-                    f"## {explanation.icon} {explanation.headline}\n\n"
-                    f"{explanation.what_happened}\n\n"
-                    f"**おまえがやること:** {explanation.user_action}\n\n"
-                    f"確認時刻: {format_jst(result.checked_at)}（日本時間）"
-                ),
-            )
             client.close_issue(home_repository, event.issue_number)
-            print(f"INCIDENT_RECOVERED target={result.target.key}")
+            print(f"INCIDENT_{event.kind.upper()} target={result.target.key}")
 
 
 def markdown_summary(results: Iterable[Health]) -> str:
@@ -935,7 +953,7 @@ def main(argv: list[str] | None = None) -> int:
 
         now = datetime.now(UTC)
         raw_results = [evaluate_target(client, target, now) for target in targets]
-        results = apply_redundancy_rules(raw_results)
+        results = confirm_actionable_results(client, apply_redundancy_rules(raw_results))
         for result in results:
             level = "OK" if result.healthy else "ERROR"
             print(
